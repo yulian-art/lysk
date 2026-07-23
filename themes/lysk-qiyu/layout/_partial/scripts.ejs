@@ -1,0 +1,5 @@
+<% var music = theme.music || {}; %>
+<% if (music.enable && music.src) { %>
+  <audio id="qiyu-background-music" src="<%- url_for(music.src) %>" <%- music.autoplay ? 'autoplay' : '' %> <%- music.loop !== false ? 'loop' : '' %> preload="auto"></audio>
+<% } %>
+<%- js('js/main.js') %>

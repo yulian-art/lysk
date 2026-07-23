@@ -1,0 +1,18 @@
+<%
+  var menu = theme.menu || theme.menus || {};
+  var social = theme.social || {};
+%>
+<header class="site-header">
+  <a class="site-brand" href="<%- url_for('/') %>" aria-label="<%- theme.title || config.title || '首页' %>">
+    <span class="brand-sigil">✦</span>
+    <span><%- theme.title || config.title || '深海樱花·祁煜' %></span>
+  </a>
+  <nav class="nav-menu" aria-label="主导航">
+    <% for (var name in menu) { if (Object.prototype.hasOwnProperty.call(menu, name)) { %>
+      <a href="<%- url_for(menu[name]) %>"><%- name %></a>
+    <% }} %>
+    <% for (var socialName in social) { if (Object.prototype.hasOwnProperty.call(social, socialName) && social[socialName]) { %>
+      <a href="<%- social[socialName] %>" target="_blank" rel="noopener noreferrer"><%- socialName %></a>
+    <% }} %>
+  </nav>
+</header>

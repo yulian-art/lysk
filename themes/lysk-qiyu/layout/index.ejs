@@ -1,0 +1,68 @@
+<%
+  function toArray(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
+
+  var hero = theme.hero || {};
+  var assets = theme.assets || {};
+  var recentCollection = site.posts || [];
+  if (recentCollection && typeof recentCollection.sort === 'function' && typeof recentCollection.each === 'function') {
+    recentCollection = recentCollection.sort('-date');
+  }
+  if (recentCollection && typeof recentCollection.limit === 'function') {
+    recentCollection = recentCollection.limit(8);
+  }
+  var recentPosts = toArray(recentCollection).slice(0, 8);
+  var heroTags = hero.tags || ['深海', '樱花', '祁煜'];
+%>
+
+<section class="home-view" aria-label="深海樱花首页">
+  <article class="glass-card hero-card">
+    <div class="avatar-frame">
+      <img src="<%- url_for(assets.avatar || 'images/avatar.jpg') %>" alt="<%- theme.author || config.author || 'avatar' %>" class="site-avatar">
+    </div>
+    <p class="eyebrow">Love and Deepspace</p>
+    <h1><%- theme.title || config.title || '深海樱花·祁煜' %></h1>
+    <p class="subtitle"><%- theme.subtitle || config.subtitle || '在深海的蓝光里，听见樱花落下' %></p>
+    <p class="hero-copy"><%- hero.quote || theme.description || config.description || '海风把夜色揉成潮汐，樱花在光里缓慢下沉。' %></p>
+    <div class="hero-tags" aria-label="主题标签">
+      <% heroTags.forEach(function(tag) { %>
+        <span><%- tag %></span>
+      <% }) %>
+    </div>
+  </article>
+
+  <aside class="post-dock" aria-label="最新文章">
+    <button class="dock-handle" type="button" aria-label="展开最新文章">✦</button>
+    <div class="dock-panel">
+      <h2>最新潮汐</h2>
+      <% if (recentPosts.length) { %>
+        <ol class="dock-list">
+          <% recentPosts.forEach(function(post) { %>
+            <li>
+              <a href="<%- url_for(post.path) %>">
+                <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+                <span><%- post.title || '未命名文章' %></span>
+              </a>
+            </li>
+          <% }) %>
+        </ol>
+      <% } else { %>
+        <p class="empty-note">这片海域还没有新的记录。</p>
+      <% } %>
+    </div>
+  </aside>
+
+  <p class="interaction-hint">✦ 游动 · 点击 ✦</p>
+</section>

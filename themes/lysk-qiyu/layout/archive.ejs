@@ -1,0 +1,8 @@
+<section class="glass-card listing-card">
+  <header class="listing-header">
+    <p class="eyebrow">Archive</p>
+    <h1>归档</h1>
+    <p>把所有潮汐，按时间收进深海。</p>
+  </header>
+  <%- partial('_partial/post-list', { posts: page.posts || site.posts, emptyText: '还没有可归档的文章。' }) %>
+</section>

@@ -1,0 +1,8 @@
+<section class="glass-card listing-card">
+  <header class="listing-header">
+    <p class="eyebrow">Tag</p>
+    <h1># <%- page.tag || '标签' %></h1>
+    <p>被同一个光点标记的片段。</p>
+  </header>
+  <%- partial('_partial/post-list', { posts: page.posts, emptyText: '这个标签下暂时没有文章。' }) %>
+</section>

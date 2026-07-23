@@ -1,35 +1,64 @@
+<%
+  var themeTitle = theme.title || config.title || '深海樱花·祁煜';
+  var assets = theme.assets || {};
+  var glass = theme.glass || {};
+  var effects = theme.effects || {};
+  var pageKind = (typeof is_home === 'function' && is_home()) ? 'home' : (page.layout || 'page');
+  var isReading = typeof is_post === 'function' && is_post();
+
+  function pick(value, fallback) {
+    return value === undefined || value === null || value === '' ? fallback : value;
+  }
+
+  function toBool(value, fallback) {
+    if (value === undefined || value === null || value === '') return fallback;
+    return value === true || value === 'true' || value === 'on' || value === 1;
+  }
+
+  var background = pick(assets.background, 'images/background-1.jpg');
+  var avatar = pick(assets.avatar, 'images/avatar.jpg');
+  var cursorNormal = pick(assets.cursor_normal, 'images/cursor-normal.png');
+  var cursorText = pick(assets.cursor_text, 'images/cursor-text.png');
+
+  var effectConfig = {
+    sakura: toBool(effects.sakura, true),
+    fallingSakura: toBool(effects.falling_sakura, true),
+    fish: toBool(effects.fish, true),
+    fishCount: Number(pick(effects.fish_count, 20)),
+    fishMin: Number(pick(effects.fish_min, 18)),
+    fishMax: Number(pick(effects.fish_max, 22)),
+    sakuraClickMin: Number(pick(effects.sakura_click_min, 50)),
+    sakuraClickMax: Number(pick(effects.sakura_click_max, 80)),
+    density: isReading ? Number(pick(effects.reading_density, 0.45)) : 1,
+    lowPowerMode: pick(effects.low_power_mode, 'auto'),
+    cursors: {
+      normal: url_for(cursorNormal),
+      text: url_for(cursorText)
+    }
+  };
+
+  var effectJson = JSON.stringify(effectConfig).replace(/'/g, '&#39;');
+%>
 <!DOCTYPE html>
-<html>
+<html lang="<%- config.language || 'zh-CN' %>">
 <head>
-    <title><%- theme.title %></title>
-    <meta charset="utf-8">
-
-    <!-- 引入配置文件 -->
-    <%- css('css/main.css') %>
-    
+  <%- partial('_partial/head') %>
+  <%- partial('_partial/styles') %>
 </head>
-<body>
-
-    <div id="main">
-        <!-- 引入侧边栏 -->
-        <aside id="#aside">
-            <%- include('aside.ejs') %>
-        </aside>
-
-        <!-- 引入导航 -->
-        <nav>
-            <%- include('nav.ejs') %>
-        </nav>
-
-        <!-- 引入正文 -->
-        <div id="content">
+<body class="qiyu-theme page-kind-<%- pageKind %>">
+  <div
+    class="theme-shell"
+    style="--bg-image: url('<%- url_for(background) %>'); --avatar-image: url('<%- url_for(avatar) %>'); --cursor-normal: url('<%- url_for(cursorNormal) %>'); --cursor-text: url('<%- url_for(cursorText) %>'); --glass-bg: <%- pick(glass.color, 'rgba(12, 22, 39, 0.54)') %>; --glass-alpha: <%- pick(glass.opacity, 0.74) %>; --glass-border: <%- pick(glass.border_color, 'rgba(255, 183, 197, 0.32)') %>; --glass-blur: <%- pick(glass.blur, 16) %>px;"
+    data-effect-config='<%- effectJson %>'
+  >
+    <canvas id="qiyu-ocean-canvas" aria-hidden="true"></canvas>
+    <div class="ocean-vignette" aria-hidden="true"></div>
+    <%- partial('_partial/header') %>
+    <main class="site-main" id="content">
       <%- body %>
-        </div>
-        
-    </div>
-
-    <!-- 引入 js 文件 -->
-    <%- js('js/main.js') %>
-
+    </main>
+    <%- partial('_partial/footer') %>
+  </div>
+  <%- partial('_partial/scripts') %>
 </body>
 </html>

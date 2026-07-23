@@ -1,11 +1,62 @@
-title: lysk
+# 深海樱花·祁煜 Hexo 主题配置
+# 修改本文件后运行 `hexo clean && hexo generate` 让配置重新生效。
 
+# 站点展示信息。未填写时会回退到根目录 `_config.yml` 中的 Hexo 配置。
+title: 深海樱花·祁煜
+subtitle: 在深海的蓝光里，听见樱花落下
 author: julien
+description: 以《恋与深空》祁煜的梦幻深海意象与樱花光影为核心的沉浸式 Hexo 主题。
 
-menus: 
-  主页: /
-  关于: /about
+# 首页主卡片文案与标签。
+hero:
+  quote: 海风把夜色揉成潮汐，樱花在光里缓慢下沉。这里收拢梦、诗、记录，与属于祁煜的蓝色心跳。
+  tags:
+    - 深海
+    - 樱花
+    - 祁煜
+    - 恋与深空
 
-links:
-  博客园: 
-  github: https://github.com
+# 导航菜单。键为显示文字，值为链接。
+menu:
+  首页: /
+  归档: /archives/
+  分类: /categories/
+  标签: /tags/
+
+# 社交链接。留空对象即可隐藏。
+social:
+  GitHub: https://github.com
+
+# 背景音乐。默认关闭，开启后填写 src。
+music:
+  enable: false
+  src: ""
+  autoplay: false
+  loop: true
+
+# 特效配置。
+effects:
+  sakura: true
+  falling_sakura: true
+  sakura_click_min: 50
+  sakura_click_max: 80
+  fish: true
+  fish_count: 20
+  fish_min: 18
+  fish_max: 22
+  reading_density: 0.45
+  low_power_mode: auto
+
+# 毛玻璃卡片配置。
+glass:
+  color: rgba(12, 22, 39, 0.54)
+  opacity: 0.74
+  border_color: rgba(255, 183, 197, 0.32)
+  blur: 16
+
+# 主题内置资源。由根目录 PICTURE 文件夹复制而来。
+assets:
+  background: images/background-1.jpg
+  avatar: images/avatar.jpg
+  cursor_normal: images/cursor-normal.png
+  cursor_text: images/cursor-text.png

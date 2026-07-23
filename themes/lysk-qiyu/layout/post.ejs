@@ -1,8 +1,56 @@
-<div>
-    <span id="post-author">作者: <%- theme.author %></span>
-    <span id="post-date"><%- date(page.date, "YYYY-MM-DD HH:mm:ss") %></span>
-</div>
+<%
+  function listFrom(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
 
-<div id="article">
+  var tags = listFrom(page.tags);
+  var categories = listFrom(page.categories);
+%>
+
+<article class="glass-card content-card reading-card">
+  <header class="article-header">
+    <p class="eyebrow">Deep Sea Note</p>
+    <h1><%- page.title || '未命名文章' %></h1>
+    <div class="post-meta">
+      <time datetime="<%- date_xml(page.date) %>"><%- date(page.date, config.date_format || 'YYYY-MM-DD') %></time>
+      <% if (categories.length) { %>
+        <span>·</span>
+        <% categories.forEach(function(category, index) { %>
+          <a href="<%- url_for(category.path) %>"><%- category.name %></a><%- index < categories.length - 1 ? ' / ' : '' %>
+        <% }) %>
+      <% } %>
+    </div>
+  </header>
+
+  <div class="article-content">
     <%- page.content %>
-</div>
+  </div>
+
+  <% if (tags.length) { %>
+    <footer class="article-tags" aria-label="文章标签">
+      <% tags.forEach(function(tag) { %>
+        <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
+      <% }) %>
+    </footer>
+  <% } %>
+
+  <nav class="post-pager" aria-label="文章导航">
+    <% if (page.prev) { %>
+      <a href="<%- url_for(page.prev.path) %>" class="pager-link prev">上一篇 · <%- page.prev.title || '未命名文章' %></a>
+    <% } %>
+    <% if (page.next) { %>
+      <a href="<%- url_for(page.next.path) %>" class="pager-link next">下一篇 · <%- page.next.title || '未命名文章' %></a>
+    <% } %>
+  </nav>
+</article>

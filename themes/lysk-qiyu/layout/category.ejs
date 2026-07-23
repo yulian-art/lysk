@@ -1,0 +1,8 @@
+<section class="glass-card listing-card">
+  <header class="listing-header">
+    <p class="eyebrow">Category</p>
+    <h1><%- page.category || '分类' %></h1>
+    <p>同一片海域中的相近记录。</p>
+  </header>
+  <%- partial('_partial/post-list', { posts: page.posts, emptyText: '这个分类里暂时没有文章。' }) %>
+</section>

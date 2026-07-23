@@ -1,0 +1,42 @@
+<%
+  function normalizePosts(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.sort === 'function' && typeof collection.each === 'function') {
+      collection = collection.sort('-date');
+    }
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
+
+  var list = normalizePosts(typeof posts !== 'undefined' ? posts : page.posts);
+  var emptyCopy = typeof emptyText !== 'undefined' ? emptyText : '这片海域暂时没有文章。';
+%>
+
+<% if (list.length) { %>
+  <div class="post-grid">
+    <% list.forEach(function(post) {
+      var excerpt = String(post.excerpt || post.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    %>
+      <article class="post-item">
+        <a href="<%- url_for(post.path) %>">
+          <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+          <h2><%- post.title || '未命名文章' %></h2>
+          <% if (excerpt) { %>
+            <p><%- excerpt.slice(0, 88) %><%- excerpt.length > 88 ? '...' : '' %></p>
+          <% } %>
+        </a>
+      </article>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p class="empty-note"><%- emptyCopy %></p>
+<% } %>
