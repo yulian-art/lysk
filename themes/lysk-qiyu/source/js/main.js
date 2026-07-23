@@ -61,7 +61,8 @@
     lastMoveAt: 0
   };
 
-  var trailCount = clamp(Math.round(Number(config.fishCount) || 42), 30, 50);
+  var trailCount = clamp(Math.round(Number(config.fishCount) || 42), 10, 30);
+  var maxHistory = trailCount * 4;
   var history = [];
   var trailFish = [];
   var companionFish = [];
@@ -190,24 +191,34 @@
   }
 
   function drawFishTrail() {
+    var now = performance.now();
     for (var i = 0; i < trailFish.length; i += 1) {
       var item = trailFish[i];
-      var point = history[i];
+      var idx = Math.max(0, Math.min(history.length - 1, Math.floor(i * item.trailStep + item.trailOffset)));
+      var point = history[idx];
       if (!point || point.life <= 0.01) {
         hideTrailNode(item.el);
         continue;
       }
 
       var ratio = i / Math.max(1, trailFish.length - 1);
+      var tail = ratio;
       var front = 1 - ratio;
-      var alpha = lerp(0.08, 0.98, front) * point.life;
-      var size = lerp(18, 64, front) * lerp(0.38, 1, point.life);
-      var angle = resolveTrailAngle(i) - item.baseAngle;
+      var alpha = lerp(0.08, 0.98, front) * point.life * item.alphaJitter;
 
-      item.el.style.width = size.toFixed(2) + "px";
-      item.el.style.opacity = alpha.toFixed(3);
-      item.el.style.left = point.x.toFixed(2) + "px";
-      item.el.style.top = point.y.toFixed(2) + "px";
+      var size = lerp(18, 64, front) * lerp(0.38, 1, point.life) * item.sizeJitter;
+      var spread = item.spreadRadius * lerp(0.35, 1, tail);
+      var spreadAngle = item.spreadAngle + now * item.spreadSpin;
+      var spreadX = Math.cos(spreadAngle) * spread;
+      var spreadY = Math.sin(spreadAngle) * spread * 0.72;
+      var driftX = Math.sin(now * item.driftSpeed + item.phase) * item.drift * lerp(0.18, 1, tail);
+      var driftY = Math.cos(now * item.driftSpeed * 0.82 + item.phase) * item.drift * lerp(0.18, 1, tail);
+      var angle = resolveTrailAngle(idx) - item.baseAngle + item.angleJitter + Math.sin(now * 0.0008 + item.phase) * 0.12;
+
+      item.el.style.width = Math.max(10, size).toFixed(2) + "px";
+      item.el.style.opacity = Math.min(1, Math.max(0, alpha)).toFixed(3);
+      item.el.style.left = (point.x + spreadX + driftX).toFixed(2) + "px";
+      item.el.style.top = (point.y + spreadY + driftY).toFixed(2) + "px";
       item.el.style.transform = "translate(-50%, -50%) rotate(" + angle.toFixed(4) + "rad)";
     }
   }
@@ -311,6 +322,7 @@
 
   function seedHistory() {
     history.length = 0;
+    var count = maxHistory || trailCount * 4;
     for (var i = 0; i < trailCount; i += 1) {
       var ratio = i / Math.max(1, trailCount - 1);
       var angle = ratio * Math.PI * 2;
@@ -334,8 +346,8 @@
     }
 
     history.unshift(createTrailPoint(x, y, pointer.angle, 1));
-    if (history.length > trailCount) {
-      history.length = trailCount;
+    if (history.length > maxHistory) {
+      history.length = maxHistory;
     }
   }
 
@@ -363,7 +375,18 @@
       fishLayer.appendChild(fishNode);
       trailFish.push({
         el: fishNode,
-        baseAngle: asset.baseAngle
+        baseAngle: asset.baseAngle,
+        trailStep: random(3.2, 10),  //数值越大间隔越开
+        trailOffset: random(-1.8, 2.4),
+        spreadRadius: random(4, 32),
+        spreadAngle: random(0, Math.PI * 2),
+        spreadSpin: random(-0.0011, 0.0011),
+        drift: random(2.5, 13),
+        driftSpeed: random(0.00065, 0.0018),
+        phase: random(0, Math.PI * 2),
+        sizeJitter: random(0.78, 1.18),
+        alphaJitter: random(0.72, 1.08),
+        angleJitter: random(-0.34, 0.34)
       });
     }
 
@@ -371,7 +394,7 @@
     for (var j = 0; j < companionCount; j += 1) {
       var companionAsset = fishAssets[(j + 1) % fishAssets.length];
       var orbitAngle = random(0, Math.PI * 2);
-      var orbitRadius = random(22, 50);
+      var orbitRadius = random(30, 76);
       var companionNode = createTrailImage(companionAsset.src, "qiyu-companion-fish");
       fishLayer.appendChild(companionNode);
       companionFish.push({
@@ -380,13 +403,13 @@
         x: pointer.x,
         y: pointer.y,
         angle: pointer.angle,
-        delay: Math.round(random(1, Math.min(8, trailCount - 1))),
+        delay: Math.round(random(0, Math.min(12, trailCount - 1))),
         offsetX: Math.cos(orbitAngle) * orbitRadius,
         offsetY: Math.sin(orbitAngle) * orbitRadius,
         phase: random(0, Math.PI * 2),
-        speed: random(0.0014, 0.0028),
-        ease: random(0.07, 0.12),
-        size: random(34, 48)
+        speed: random(0.0012, 0.0026),
+        ease: random(0.06, 0.11),
+        size: random(28, 46)
       });
     }
 
@@ -397,13 +420,13 @@
       fishLayer.appendChild(dropNode);
       trailDrops.push({
         el: dropNode,
-        slot: Math.round(random(3, trailCount - 1)),
-        offsetX: random(-32, 32),
-        offsetY: random(-32, 32),
+        slot: Math.round(random(2, trailCount - 1)),
+        offsetX: random(-46, 46),
+        offsetY: random(-38, 38),
         phase: random(0, Math.PI * 2),
-        speed: random(0.0016, 0.0036),
-        scale: random(0.7, 1.24),
-        alpha: random(0.62, 1)
+        speed: random(0.0014, 0.0034),
+        scale: random(0.66, 1.28),
+        alpha: random(0.58, 1)
       });
     }
   }
