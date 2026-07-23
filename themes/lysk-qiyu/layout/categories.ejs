@@ -1,0 +1,48 @@
+<%
+  function normalizeTerms(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
+
+  function termCount(term) {
+    if (!term) return 0;
+    if (typeof term.length === 'number') return term.length;
+    if (term.posts && typeof term.posts.length === 'number') return term.posts.length;
+    if (term.posts && typeof term.posts.count === 'function') return term.posts.count();
+    if (term.posts && typeof term.posts.toArray === 'function') return term.posts.toArray().length;
+    return 0;
+  }
+
+  var categories = normalizeTerms(site.categories).sort(function(a, b) {
+    return String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hans-CN');
+  });
+%>
+<section class="glass-card listing-card">
+  <header class="listing-header">
+    <p class="eyebrow">Categories</p>
+    <h1>分类</h1>
+    <p>按主题进入不同海域。</p>
+  </header>
+  <% if (categories.length) { %>
+    <div class="term-grid">
+      <% categories.forEach(function(category) { %>
+        <a class="term-button" href="<%- url_for(category.path) %>">
+          <span class="term-name"><%- category.name %></span>
+          <span class="term-count"><%- termCount(category) %> 篇</span>
+        </a>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="empty-note">暂时还没有分类。</p>
+  <% } %>
+</section>

@@ -1,0 +1,48 @@
+<%
+  function normalizeTerms(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
+
+  function termCount(term) {
+    if (!term) return 0;
+    if (typeof term.length === 'number') return term.length;
+    if (term.posts && typeof term.posts.length === 'number') return term.posts.length;
+    if (term.posts && typeof term.posts.count === 'function') return term.posts.count();
+    if (term.posts && typeof term.posts.toArray === 'function') return term.posts.toArray().length;
+    return 0;
+  }
+
+  var tags = normalizeTerms(site.tags).sort(function(a, b) {
+    return String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hans-CN');
+  });
+%>
+<section class="glass-card listing-card">
+  <header class="listing-header">
+    <p class="eyebrow">Tags</p>
+    <h1>标签</h1>
+    <p>按光点找到相同标记的片段。</p>
+  </header>
+  <% if (tags.length) { %>
+    <div class="term-grid">
+      <% tags.forEach(function(tag) { %>
+        <a class="term-button" href="<%- url_for(tag.path) %>">
+          <span class="term-name"># <%- tag.name %></span>
+          <span class="term-count"><%- termCount(tag) %> 篇</span>
+        </a>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="empty-note">暂时还没有标签。</p>
+  <% } %>
+</section>
