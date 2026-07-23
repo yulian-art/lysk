@@ -65,13 +65,6 @@
     document.body.classList.add("has-qiyu-cursor");
   }
 
-  resize();
-  seedHistory();
-  createFish();
-  createFallingPetals();
-  bindEvents();
-  requestAnimationFrame(frame);
-
   function bindEvents() {
     window.addEventListener("resize", resize, { passive: true });
     window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -499,4 +492,11 @@
     var hardwareWeak = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || window.innerWidth < 768;
     return prefersReduced || hardwareWeak;
   }
+
+  resize();
+  seedHistory();
+  createFish();
+  createFallingPetals();
+  bindEvents();
+  requestAnimationFrame(frame);
 })();
