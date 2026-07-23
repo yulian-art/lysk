@@ -2,9 +2,11 @@
   position: relative;
   display: grid;
   width: 100%;
-  min-height: calc(100vh - var(--header-height) - 162px);
+  min-height: 100vh;
   place-items: center;
-  touch-action: none;
+  overflow: hidden;
+  padding: calc(var(--header-height) + 72px) clamp(16px, 4vw, 64px) 92px;
+  touch-action: pan-y;
 
 }
 
@@ -102,10 +104,10 @@
 }
 
 .interaction-hint {
-  position: fixed;
+  position: absolute;
   bottom: 54px;
   left: 50%;
-  z-index: 5;
+  z-index: 2;
   margin: 0;
   color: rgba(255, 247, 251, 0.78);
   font-size: 14px;

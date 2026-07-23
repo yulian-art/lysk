@@ -24,45 +24,134 @@
     recentCollection = recentCollection.limit(8);
   }
   var recentPosts = toArray(recentCollection).slice(0, 8);
+  var detailCards = recentPosts.slice(0, 4);
+  while (detailCards.length < 4) detailCards.push(null);
+
   var heroTags = hero.tags || ['深海', '樱花', '祁煜'];
+  var leftBars = [
+    { width: '42%', height: 8 },
+    { width: '64%', height: 12 },
+    { width: '54%', height: 7 },
+    { width: '70%', height: 10 },
+    { width: '49%', height: 6 },
+    { width: '58%', height: 13 }
+  ];
+  var navBars = ['62px', '54px', '48px', '58px'];
+  var cardLineSets = [
+    ['72%', '86%', '64%', '78%', '56%'],
+    ['54%', '78%', '68%', '62%', '44%'],
+    ['64%', '84%', '74%', '70%', '52%'],
+    ['48%', '72%', '80%', '58%', '46%']
+  ];
 %>
 
-<section class="home-view" aria-label="深海樱花首页">
-  <article class="glass-card hero-card">
-    <div class="avatar-frame">
-      <img src="<%- url_for(assets.avatar || 'images/avatar.jpg') %>" alt="<%- theme.author || config.author || 'avatar' %>" class="site-avatar">
-    </div>
-    <p class="eyebrow">Love and Deepspace</p>
-    <h1><%- theme.title || config.title || '深海樱花·祁煜' %></h1>
-    <p class="subtitle"><%- theme.subtitle || config.subtitle || '在深海的蓝光里，听见樱花落下' %></p>
-    <p class="hero-copy"><%- hero.quote || theme.description || config.description || '海风把夜色揉成潮汐，樱花在光里缓慢下沉。' %></p>
-    <div class="hero-tags" aria-label="主题标签">
-      <% heroTags.forEach(function(tag) { %>
-        <span><%- tag %></span>
-      <% }) %>
-    </div>
-  </article>
+<section class="home-scroll" aria-label="首页与详情页">
+  <section class="home-view snap-panel" aria-label="深海樱花首页">
+    <article class="glass-card hero-card">
+      <div class="avatar-frame">
+        <img src="<%- url_for(assets.avatar || 'images/avatar.jpg') %>" alt="<%- theme.author || config.author || 'avatar' %>" class="site-avatar">
+      </div>
+      <p class="eyebrow">Love and Deepspace</p>
+      <h1><%- theme.title || config.title || '深海樱花·祁煜' %></h1>
+      <p class="subtitle"><%- theme.subtitle || config.subtitle || '在深海的蓝光里，听见樱花落下' %></p>
+      <p class="hero-copy"><%- hero.quote || theme.description || config.description || '海风把夜色揉成潮汐，樱花在光里缓慢下沉。' %></p>
+      <div class="hero-tags" aria-label="主题标签">
+        <% heroTags.forEach(function(tag) { %>
+          <span><%- tag %></span>
+        <% }) %>
+      </div>
+    </article>
 
-  <aside class="post-dock" aria-label="最新文章">
-    <button class="dock-handle" type="button" aria-label="展开最新文章">✦</button>
-    <div class="dock-panel">
-      <h2>最新潮汐</h2>
-      <% if (recentPosts.length) { %>
-        <ol class="dock-list">
-          <% recentPosts.forEach(function(post) { %>
-            <li>
-              <a href="<%- url_for(post.path) %>">
-                <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
-                <span><%- post.title || '未命名文章' %></span>
-              </a>
-            </li>
+    <aside class="post-dock" aria-label="最新文章">
+      <button class="dock-handle" type="button" aria-label="展开最新文章">✦</button>
+      <div class="dock-panel">
+        <h2>最新潮汐</h2>
+        <% if (recentPosts.length) { %>
+          <ol class="dock-list">
+            <% recentPosts.forEach(function(post) { %>
+              <li>
+                <a href="<%- url_for(post.path) %>">
+                  <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+                  <span><%- post.title || '未命名文章' %></span>
+                </a>
+              </li>
+            <% }) %>
+          </ol>
+        <% } else { %>
+          <p class="empty-note">这片海域还没有新的记录。</p>
+        <% } %>
+      </div>
+    </aside>
+
+    <p class="interaction-hint">向下滚动进入详情</p>
+  </section>
+
+  <section class="detail-view snap-panel" aria-label="详情页">
+    <div class="detail-layout">
+      <aside class="detail-left" aria-hidden="true">
+        <div class="detail-left-dot"></div>
+        <div class="detail-left-lines">
+          <% leftBars.forEach(function(bar, index) { %>
+            <div class="detail-left-line-row detail-left-line-row-<%- index + 1 %>">
+              <span style="width: <%- bar.width %>; height: <%- bar.height %>px;"></span>
+            </div>
           <% }) %>
-        </ol>
-      <% } else { %>
-        <p class="empty-note">这片海域还没有新的记录。</p>
-      <% } %>
-    </div>
-  </aside>
+        </div>
+        <div class="detail-left-pill">
+          <span class="detail-pill-dot"></span>
+          <span class="detail-pill-line"></span>
+        </div>
+      </aside>
 
-  <p class="interaction-hint">✦ 游动 · 点击 ✦</p>
+      <section class="detail-right" aria-label="详情页卡片网格">
+        <header class="detail-topbar" aria-hidden="true">
+          <div class="detail-nav-left">
+            <% navBars.forEach(function(width, index) { %>
+              <span class="detail-nav-item detail-nav-item-<%- index + 1 %>" style="--nav-width: <%- width %>;"></span>
+            <% }) %>
+          </div>
+          <div class="detail-nav-right">
+            <span class="detail-action-dot"></span>
+            <span class="detail-action-dot"></span>
+            <span class="detail-action-dot"></span>
+            <span class="detail-action-line"></span>
+          </div>
+        </header>
+        <div class="detail-divider" aria-hidden="true"></div>
+
+        <div class="detail-grid">
+          <% detailCards.forEach(function(post, index) {
+            var lines = cardLineSets[index] || cardLineSets[0];
+            var label = post && post.title ? post.title : '详情卡片 ' + (index + 1);
+            var href = post && post.path ? url_for(post.path) : '#';
+          %>
+            <a class="detail-card detail-card-<%- index + 1 %>" href="<%- href %>" aria-label="<%- label %>" style="--line-a: <%- lines[0] %>; --line-b: <%- lines[1] %>; --line-c: <%- lines[2] %>; --line-d: <%- lines[3] %>; --line-e: <%- lines[4] %>;">
+              <div class="detail-card-media" aria-hidden="true">
+                <div class="detail-card-badge detail-card-badge-left">
+                  <span class="detail-card-badge-dot"></span>
+                  <span class="detail-card-badge-line"></span>
+                </div>
+                <div class="detail-card-badge detail-card-badge-right">
+                  <span class="detail-card-badge-dot"></span>
+                  <span class="detail-card-badge-line"></span>
+                </div>
+              </div>
+              <div class="detail-card-copy" aria-hidden="true">
+                <span class="detail-copy-kicker"></span>
+                <div class="detail-copy-title">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="detail-copy-meta">
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </section>
+    </div>
+  </section>
 </section>

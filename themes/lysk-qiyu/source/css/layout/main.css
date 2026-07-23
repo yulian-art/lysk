@@ -6,6 +6,31 @@
 
 }
 
+body.page-kind-home {
+  overflow: hidden;
+
+}
+
+.page-kind-home .site-main {
+  display: block;
+  height: 100vh;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 24px);
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+
+}
+
+.page-kind-home .site-main::-webkit-scrollbar {
+  display: none;
+
+}
+
 .page-kind-post .site-main,
 .page-kind-page .site-main,
 .page-kind-archive .site-main,

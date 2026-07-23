@@ -77,15 +77,13 @@
       lastTouchAt = Date.now();
       updatePointer(touch.clientX, touch.clientY, true);
       triggerClickEffects(touch.clientX, touch.clientY);
-      preventHomeTouchScroll(event);
-    }, { passive: false });
+    }, { passive: true });
 
     window.addEventListener('touchmove', function (event) {
       if (!event.touches || !event.touches.length) return;
       var touch = event.touches[0];
       updatePointer(touch.clientX, touch.clientY, true);
-      preventHomeTouchScroll(event);
-    }, { passive: false });
+    }, { passive: true });
 
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) {
@@ -115,15 +113,6 @@
 
     cursorEffects.syncMode(x, y);
     trailEffects.push(x, y);
-  }
-
-  function preventHomeTouchScroll(event) {
-    var isHome = document.body.classList.contains('page-kind-home');
-    var target = event.target;
-    var nativeArea = target && target.closest('a, button, input, textarea, select, .site-header, .post-dock, .content-card, .listing-card');
-    if (isHome && !nativeArea) {
-      event.preventDefault();
-    }
   }
 
   function triggerClickEffects(x, y) {
