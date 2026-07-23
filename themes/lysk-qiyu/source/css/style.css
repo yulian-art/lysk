@@ -171,7 +171,7 @@ textarea,
   top: max(16px, env(safe-area-inset-top));
   left: 50%;
   display: flex;
-  width: min(1120px, calc(100vw - 32px));
+  width: min(2120px, calc(100vw - 32px));
   min-height: var(--header-height);
   align-items: center;
   justify-content: space-between;
