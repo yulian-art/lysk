@@ -2,4 +2,9 @@
 <% if (music.enable && music.src) { %>
   <audio id="qiyu-background-music" src="<%- url_for(music.src) %>" <%- music.autoplay ? 'autoplay' : '' %> <%- music.loop !== false ? 'loop' : '' %> preload="auto"></audio>
 <% } %>
+<%- js('js/core/utils.js') %>
+<%- js('js/core/config.js') %>
+<%- js('js/effects/cursor.js') %>
+<%- js('js/effects/trail.js') %>
+<%- js('js/effects/sakura.js') %>
 <%- js('js/main.js') %>
