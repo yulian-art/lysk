@@ -1,0 +1,14 @@
+:root {
+  --pink: #ffb7c5;
+  --rose: #f06f9a;
+  --gold: #d4a574;
+  --deep-blue: #0a0e1a;
+  --midnight: #111f35;
+  --aqua: #78d6d0;
+  --pearl: #fff7fb;
+  --mist: rgba(232, 243, 255, 0.78);
+  --muted: rgba(232, 243, 255, 0.62);
+  --shadow: rgba(2, 8, 18, 0.48);
+  --header-height: 74px;
+
+}

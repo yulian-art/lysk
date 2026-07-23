@@ -1,0 +1,38 @@
+.qiyu-ripple {
+  position: fixed;
+  z-index: 3;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border: 1px solid rgba(255, 247, 251, 0.78);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(255, 183, 197, 0.66);
+  transform: translate(-50%, -50%);
+  animation: qiyuRipple 780ms ease-out forwards;
+
+}
+
+@keyframes qiyuRipple {
+  from {
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(10);
+  }
+
+}
+
+@keyframes footerPetal {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(-6px) rotate(16deg);
+    opacity: 1;
+  }
+
+}

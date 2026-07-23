@@ -1,0 +1,93 @@
+.post-dock {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  width: min(390px, calc(100vw - 18px));
+  transform: translate(330px, -50%);
+  transition: transform 240ms ease;
+
+}
+
+.post-dock:hover,
+.post-dock:focus-within {
+  transform: translate(0, -50%);
+
+}
+
+.dock-handle {
+  flex: 0 0 48px;
+  height: 72px;
+  margin-top: 22px;
+  border: 1px solid rgba(255, 183, 197, 0.32);
+  border-right: 0;
+  border-radius: 22px 0 0 22px;
+  color: var(--pearl);
+  background: rgba(12, 22, 39, 0.58);
+  box-shadow: 0 20px 44px rgba(2, 8, 18, 0.28);
+  backdrop-filter: blur(14px);
+
+}
+
+.dock-panel {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid rgba(255, 183, 197, 0.28);
+  border-right: 0;
+  border-radius: 24px 0 0 24px;
+  background: rgba(8, 16, 31, 0.68);
+  box-shadow: 0 28px 76px rgba(2, 8, 18, 0.38);
+  backdrop-filter: blur(18px) saturate(145%);
+
+}
+
+.dock-panel h2 {
+  margin: 0 0 14px;
+  color: var(--pearl);
+  font-size: 18px;
+
+}
+
+.dock-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+}
+
+.dock-list a {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+
+}
+
+.dock-list a:hover,
+.dock-list a:focus-visible {
+  border-color: rgba(255, 183, 197, 0.36);
+  background: rgba(255, 183, 197, 0.12);
+  outline: none;
+  transform: translateX(-4px);
+
+}
+
+.dock-list time,
+.post-item time,
+.post-meta {
+  color: var(--muted);
+  font-size: 13px;
+
+}
+
+.dock-list span {
+  color: rgba(255, 247, 251, 0.92);
+  font-size: 14px;
+
+}

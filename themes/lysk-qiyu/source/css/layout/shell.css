@@ -1,0 +1,102 @@
+.theme-shell {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+  overflow-x: hidden;
+  background: var(--deep-blue);
+
+}
+
+.theme-shell::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  content: '';
+  background-image:
+    linear-gradient(180deg, rgba(3, 7, 18, 0.08), rgba(3, 7, 18, 0.52) 72%, rgba(3, 7, 18, 0.78)),
+    var(--bg-image);
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.02);
+
+}
+
+.theme-shell::after {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: '';
+  background-image:
+    repeating-linear-gradient(115deg, rgba(120, 214, 208, 0.07) 0 1px, transparent 1px 34px),
+    linear-gradient(90deg, rgba(255, 183, 197, 0.08), transparent 28%, rgba(212, 165, 116, 0.06) 70%, transparent);
+  mix-blend-mode: screen;
+  opacity: 0.58;
+
+}
+
+#qiyu-ocean-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+
+}
+
+.qiyu-fish-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint style;
+
+}
+
+.qiyu-trail-fish,
+.qiyu-companion-fish,
+.qiyu-trail-drop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+
+}
+
+.qiyu-trail-fish,
+.qiyu-companion-fish {
+  filter: drop-shadow(0 0 10px rgba(255, 247, 251, 0.28)) drop-shadow(0 0 18px rgba(120, 214, 208, 0.16));
+  transform-origin: center;
+
+}
+
+.qiyu-trail-drop {
+  filter: drop-shadow(0 0 8px rgba(255, 247, 251, 0.32));
+  transform-origin: center;
+
+}
+
+.ocean-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(1, 5, 14, 0.58), transparent 24%, transparent 76%, rgba(1, 5, 14, 0.48)),
+    linear-gradient(0deg, rgba(2, 8, 18, 0.72), transparent 38%, rgba(6, 20, 42, 0.14));
+
+}
+
+.site-header,
+.site-main,
+.site-footer {
+  position: relative;
+  z-index: 4;
+
+}
