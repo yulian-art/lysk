@@ -41,7 +41,7 @@ effects:
   sakura_click_min: 50
   sakura_click_max: 80
   fish: true
-  fish_count: 20
+  fish_count: 42
   fish_min: 18
   fish_max: 22
   reading_density: 0.45
@@ -60,3 +60,6 @@ assets:
   avatar: images/avatar.jpg
   cursor_normal: images/cursor-normal.png
   cursor_text: images/cursor-text.png
+  trail_fish_a: images/cursor-trail-fish-a.png
+  trail_fish_b: images/cursor-trail-fish-b.png
+  trail_drop: images/cursor-trail-drop.png

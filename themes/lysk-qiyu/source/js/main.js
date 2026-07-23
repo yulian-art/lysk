@@ -3,6 +3,7 @@
 
   var shell = document.querySelector(".theme-shell");
   var canvas = document.getElementById("qiyu-ocean-canvas");
+  var fishLayer = document.getElementById("qiyu-fish-layer");
   if (!shell || !canvas) return;
 
   var ctx = canvas.getContext("2d", { alpha: true });
@@ -19,6 +20,10 @@
     sakuraClickMax: 80,
     density: 1,
     lowPowerMode: "auto",
+    trail: {
+      fishImages: [],
+      bubbleImage: ""
+    },
     cursors: {
       normal: "",
       text: ""
@@ -34,6 +39,8 @@
 
   var config = Object.assign({}, defaults, parsed);
   config.cursors = Object.assign({}, defaults.cursors, parsed.cursors || {});
+  config.trail = Object.assign({}, defaults.trail, parsed.trail || {});
+  config.trail.fishImages = Array.isArray(config.trail.fishImages) ? config.trail.fishImages.filter(Boolean) : [];
   config.density = clamp(Number(config.density) || 1, 0.12, 1.4);
 
   var finePointer = window.matchMedia("(pointer: fine)").matches;
@@ -49,13 +56,21 @@
     y: window.innerHeight / 2,
     active: finePointer,
     moved: false,
-    mode: "normal"
+    mode: "normal",
+    angle: -Math.PI * 0.75,
+    lastMoveAt: 0
   };
 
+  var trailCount = clamp(Math.round(Number(config.fishCount) || 42), 30, 50);
   var history = [];
-  var fish = [];
+  var trailFish = [];
+  var companionFish = [];
+  var trailDrops = [];
   var burstPetals = [];
   var fallingPetals = [];
+  var fishAssets = createFishAssets(config.trail.fishImages);
+  var bubbleImageSrc = config.trail.bubbleImage || "";
+  var idleTrailLastPush = 0;
   var cursorImages = {
     normal: loadImage(config.cursors.normal),
     text: loadImage(config.cursors.text)
@@ -108,10 +123,19 @@
   }
 
   function updatePointer(x, y, moved) {
+    var dx = x - pointer.x;
+    var dy = y - pointer.y;
+    if (Math.abs(dx) + Math.abs(dy) > 0.4) {
+      pointer.angle = Math.atan2(dy, dx);
+    }
+
     pointer.x = x;
     pointer.y = y;
     pointer.active = true;
     pointer.moved = pointer.moved || moved;
+    if (moved) {
+      pointer.lastMoveAt = performance.now();
+    }
     pointer.mode = detectCursorMode(x, y);
     document.body.classList.toggle("is-text-cursor", pointer.mode === "text");
     pushHistory(x, y);
@@ -124,6 +148,147 @@
     if (isHome && !nativeArea) {
       event.preventDefault();
     }
+  }
+
+  function createFishAssets(images) {
+    return images.map(function (src, index) {
+      return {
+        src: src,
+        baseAngle: index === 0 ? Math.PI * 0.74 : Math.PI * 0.12
+      };
+    });
+  }
+
+  function createTrailImage(src, className) {
+    var image = document.createElement("img");
+    image.className = className;
+    image.src = src;
+    image.alt = "";
+    image.decoding = "async";
+    image.draggable = false;
+    image.style.opacity = "0";
+    return image;
+  }
+
+  function updateFishEffects(time, delta) {
+    if (!trailFish.length) return;
+    updateTrailFade(time, delta);
+    drawFishTrail();
+    drawCompanionFish(time);
+    drawTrailDrops(time);
+  }
+
+  function updateTrailFade(time, delta) {
+    if (!pointer.moved) return;
+    var idleFor = time - pointer.lastMoveAt;
+    if (idleFor <= 90) return;
+
+    var decay = delta / (lowPower ? 760 : 1120);
+    for (var i = 0; i < history.length; i += 1) {
+      history[i].life = Math.max(0, history[i].life - decay);
+    }
+  }
+
+  function drawFishTrail() {
+    for (var i = 0; i < trailFish.length; i += 1) {
+      var item = trailFish[i];
+      var point = history[i];
+      if (!point || point.life <= 0.01) {
+        hideTrailNode(item.el);
+        continue;
+      }
+
+      var ratio = i / Math.max(1, trailFish.length - 1);
+      var front = 1 - ratio;
+      var alpha = lerp(0.08, 0.98, front) * point.life;
+      var size = lerp(18, 64, front) * lerp(0.38, 1, point.life);
+      var angle = resolveTrailAngle(i) - item.baseAngle;
+
+      item.el.style.width = size.toFixed(2) + "px";
+      item.el.style.opacity = alpha.toFixed(3);
+      item.el.style.left = point.x.toFixed(2) + "px";
+      item.el.style.top = point.y.toFixed(2) + "px";
+      item.el.style.transform = "translate(-50%, -50%) rotate(" + angle.toFixed(4) + "rad)";
+    }
+  }
+
+  function drawCompanionFish(time) {
+    var head = history[0];
+    var visible = head ? head.life : 0;
+
+    for (var i = 0; i < companionFish.length; i += 1) {
+      var fishItem = companionFish[i];
+      var anchor = history[Math.min(history.length - 1, fishItem.delay)] || head;
+      if (!anchor || visible <= 0.01) {
+        hideTrailNode(fishItem.el);
+        continue;
+      }
+
+      var driftX = Math.cos(time * fishItem.speed + fishItem.phase) * 8;
+      var driftY = Math.sin(time * fishItem.speed * 1.18 + fishItem.phase) * 8;
+      var targetX = anchor.x + fishItem.offsetX + driftX;
+      var targetY = anchor.y + fishItem.offsetY + driftY;
+      var oldX = fishItem.x;
+      var oldY = fishItem.y;
+
+      fishItem.x += (targetX - fishItem.x) * fishItem.ease;
+      fishItem.y += (targetY - fishItem.y) * fishItem.ease;
+      if (Math.abs(fishItem.x - oldX) + Math.abs(fishItem.y - oldY) > 0.3) {
+        fishItem.angle = Math.atan2(fishItem.y - oldY, fishItem.x - oldX);
+      }
+
+      var size = fishItem.size * lerp(0.48, 1, visible);
+      fishItem.el.style.width = size.toFixed(2) + "px";
+      fishItem.el.style.opacity = (0.82 * visible).toFixed(3);
+      fishItem.el.style.left = fishItem.x.toFixed(2) + "px";
+      fishItem.el.style.top = fishItem.y.toFixed(2) + "px";
+      fishItem.el.style.transform = "translate(-50%, -50%) rotate(" + (fishItem.angle - fishItem.baseAngle).toFixed(4) + "rad)";
+    }
+  }
+
+  function drawTrailDrops(time) {
+    for (var i = 0; i < trailDrops.length; i += 1) {
+      var drop = trailDrops[i];
+      var index = Math.min(history.length - 1, drop.slot);
+      var point = history[index];
+      if (!point || point.life <= 0.01) {
+        hideTrailNode(drop.el);
+        continue;
+      }
+
+      var ratio = index / Math.max(1, trailCount - 1);
+      var front = 1 - ratio;
+      var floatX = Math.cos(time * drop.speed + drop.phase) * 7;
+      var floatY = Math.sin(time * drop.speed * 1.22 + drop.phase) * 7;
+      var x = point.x + drop.offsetX + floatX;
+      var y = point.y + drop.offsetY + floatY;
+      var alpha = lerp(0.06, 0.56, front) * point.life * drop.alpha;
+      var size = lerp(7, 22, front) * drop.scale * lerp(0.4, 1, point.life);
+
+      drop.el.style.width = size.toFixed(2) + "px";
+      drop.el.style.opacity = alpha.toFixed(3);
+      drop.el.style.left = x.toFixed(2) + "px";
+      drop.el.style.top = y.toFixed(2) + "px";
+      drop.el.style.transform = "translate(-50%, -50%) scale(" + lerp(0.72, 1.08, front).toFixed(3) + ")";
+    }
+  }
+
+  function resolveTrailAngle(index) {
+    var point = history[index];
+    var previous = history[Math.max(0, index - 1)];
+    var next = history[Math.min(history.length - 1, index + 1)];
+
+    if (previous && point && (Math.abs(previous.x - point.x) + Math.abs(previous.y - point.y) > 0.4)) {
+      return Math.atan2(previous.y - point.y, previous.x - point.x);
+    }
+    if (next && point && (Math.abs(point.x - next.x) + Math.abs(point.y - next.y) > 0.4)) {
+      return Math.atan2(point.y - next.y, point.x - next.x);
+    }
+    return point ? point.angle : pointer.angle;
+  }
+
+  function hideTrailNode(node) {
+    node.style.opacity = "0";
   }
 
   function triggerClickEffects(x, y) {
@@ -146,126 +311,101 @@
 
   function seedHistory() {
     history.length = 0;
-    for (var i = 0; i < 90; i += 1) {
-      var ratio = i / 89;
-      history.push({
-        x: width * (0.5 + Math.sin(ratio * Math.PI * 2) * 0.12),
-        y: height * (0.5 + Math.cos(ratio * Math.PI * 2) * 0.08)
-      });
+    for (var i = 0; i < trailCount; i += 1) {
+      var ratio = i / Math.max(1, trailCount - 1);
+      var angle = ratio * Math.PI * 2;
+      history.push(createTrailPoint(
+        width * (0.5 + Math.sin(angle) * 0.12),
+        height * (0.5 + Math.cos(angle) * 0.08),
+        angle + Math.PI * 0.5,
+        1
+      ));
     }
   }
 
   function pushHistory(x, y) {
-    history.unshift({ x: x, y: y });
-    if (history.length > 110) {
-      history.length = 110;
+    var head = history[0];
+    if (head && Math.hypot(x - head.x, y - head.y) < 2) {
+      head.x = x;
+      head.y = y;
+      head.angle = pointer.angle;
+      head.life = 1;
+      return;
     }
+
+    history.unshift(createTrailPoint(x, y, pointer.angle, 1));
+    if (history.length > trailCount) {
+      history.length = trailCount;
+    }
+  }
+
+  function createTrailPoint(x, y, angle, life) {
+    return {
+      x: x,
+      y: y,
+      angle: angle || 0,
+      life: life === undefined ? 1 : life
+    };
   }
 
   function createFish() {
-    fish.length = 0;
-    if (!config.fish || reducedMotion) return;
-
-    var min = Math.max(1, Math.round(Number(config.fishMin) || 18));
-    var max = Math.max(min, Math.round(Number(config.fishMax) || 22));
-    var count = clamp(Math.round(Number(config.fishCount) || random(min, max)), min, max);
-    count = Math.max(4, Math.round(count * config.density * (lowPower ? 0.58 : 1)));
-
-    for (var i = 0; i < count; i += 1) {
-      fish.push(new Fish(i));
+    trailFish.length = 0;
+    companionFish.length = 0;
+    trailDrops.length = 0;
+    if (fishLayer) {
+      fishLayer.textContent = "";
     }
-  }
+    if (!config.fish || reducedMotion || !fishLayer || !fishAssets.length) return;
 
-  function Fish(index) {
-    var palette = ["#fff7fb", "#ffb7c5", "#ffd5df", "#78d6d0", "#d4a574"];
-    this.index = index;
-    this.x = random(0, width);
-    this.y = random(0, height);
-    this.size = random(7, 14) * (index % 3 === 0 ? 1.18 : 1);
-    this.color = palette[index % palette.length];
-    this.speed = random(0.0016, 0.0038);
-    this.ease = random(0.018, 0.05);
-    this.delay = index * random(3.4, 5.8) + random(0, 12);
-    this.orbit = random(12, 52);
-    this.phase = random(0, Math.PI * 2);
-    this.angle = 0;
-    this.trail = [];
-  }
-
-  Fish.prototype.update = function (time) {
-    var target = history[Math.min(history.length - 1, Math.floor(this.delay))] || pointer;
-    var wave = Math.sin(time * this.speed + this.phase);
-    var swirl = Math.cos(time * this.speed * 0.76 + this.phase);
-    var targetX = target.x + wave * this.orbit + swirl * this.orbit * 0.36;
-    var targetY = target.y + swirl * this.orbit * 0.52 + Math.sin(time * 0.001 + this.index) * 8;
-    var oldX = this.x;
-    var oldY = this.y;
-
-    this.x += (targetX - this.x) * this.ease;
-    this.y += (targetY - this.y) * this.ease;
-    this.angle = Math.atan2(this.y - oldY, this.x - oldX);
-    this.trail.unshift({ x: this.x, y: this.y });
-    if (this.trail.length > 16) {
-      this.trail.length = 16;
+    for (var i = 0; i < trailCount; i += 1) {
+      var asset = fishAssets[i % fishAssets.length];
+      var fishNode = createTrailImage(asset.src, "qiyu-trail-fish");
+      fishLayer.appendChild(fishNode);
+      trailFish.push({
+        el: fishNode,
+        baseAngle: asset.baseAngle
+      });
     }
-  };
 
-  Fish.prototype.draw = function () {
-    drawTrail(this.trail, this.color, this.size);
-
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle);
-
-    var bodyLength = this.size * 2.45;
-    var bodyHeight = this.size * 1.02;
-
-    ctx.globalAlpha = 0.88;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, bodyLength, bodyHeight, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.globalAlpha = 0.72;
-    ctx.beginPath();
-    ctx.moveTo(-bodyLength * 0.86, 0);
-    ctx.lineTo(-bodyLength * 1.45, -bodyHeight * 0.82);
-    ctx.lineTo(-bodyLength * 1.24, 0);
-    ctx.lineTo(-bodyLength * 1.45, bodyHeight * 0.82);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.globalAlpha = 0.42;
-    ctx.fillStyle = "#fff7fb";
-    ctx.beginPath();
-    ctx.ellipse(bodyLength * 0.12, -bodyHeight * 0.74, this.size * 0.7, this.size * 0.24, -0.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.globalAlpha = 0.84;
-    ctx.fillStyle = "rgba(8, 16, 31, 0.84)";
-    ctx.beginPath();
-    ctx.arc(bodyLength * 0.68, -bodyHeight * 0.22, Math.max(1.2, this.size * 0.14), 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-    ctx.globalAlpha = 1;
-  };
-
-  function drawTrail(points, color, size) {
-    if (points.length < 2) return;
-    ctx.save();
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    for (var i = points.length - 1; i > 0; i -= 1) {
-      var alpha = (1 - i / points.length) * 0.18;
-      ctx.strokeStyle = rgba(color, alpha);
-      ctx.lineWidth = Math.max(0.8, size * (1 - i / points.length) * 0.55);
-      ctx.beginPath();
-      ctx.moveTo(points[i].x, points[i].y);
-      ctx.lineTo(points[i - 1].x, points[i - 1].y);
-      ctx.stroke();
+    var companionCount = lowPower ? 2 : Math.floor(random(2, 4));
+    for (var j = 0; j < companionCount; j += 1) {
+      var companionAsset = fishAssets[(j + 1) % fishAssets.length];
+      var orbitAngle = random(0, Math.PI * 2);
+      var orbitRadius = random(22, 50);
+      var companionNode = createTrailImage(companionAsset.src, "qiyu-companion-fish");
+      fishLayer.appendChild(companionNode);
+      companionFish.push({
+        el: companionNode,
+        baseAngle: companionAsset.baseAngle,
+        x: pointer.x,
+        y: pointer.y,
+        angle: pointer.angle,
+        delay: Math.round(random(1, Math.min(8, trailCount - 1))),
+        offsetX: Math.cos(orbitAngle) * orbitRadius,
+        offsetY: Math.sin(orbitAngle) * orbitRadius,
+        phase: random(0, Math.PI * 2),
+        speed: random(0.0014, 0.0028),
+        ease: random(0.07, 0.12),
+        size: random(34, 48)
+      });
     }
-    ctx.restore();
+
+    if (!bubbleImageSrc) return;
+    var dropCount = Math.round((lowPower ? 10 : 18) * config.density);
+    for (var k = 0; k < dropCount; k += 1) {
+      var dropNode = createTrailImage(bubbleImageSrc, "qiyu-trail-drop");
+      fishLayer.appendChild(dropNode);
+      trailDrops.push({
+        el: dropNode,
+        slot: Math.round(random(3, trailCount - 1)),
+        offsetX: random(-32, 32),
+        offsetY: random(-32, 32),
+        phase: random(0, Math.PI * 2),
+        speed: random(0.0016, 0.0036),
+        scale: random(0.7, 1.24),
+        alpha: random(0.62, 1)
+      });
+    }
   }
 
   function createFallingPetals() {
@@ -386,7 +526,7 @@
 
     ctx.save();
     var glow = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 28);
-    glow.addColorStop(0, "rgba(255, 247, 251, 0.95)");
+    glow.addColorStop(0, "hsla(330, 39%, 93%, 0.95)");
     glow.addColorStop(0.34, "rgba(255, 183, 197, 0.42)");
     glow.addColorStop(1, "rgba(255, 183, 197, 0)");
     ctx.fillStyle = glow;
@@ -428,14 +568,23 @@
 
   function frame(time) {
     if (!lastFrame) lastFrame = time;
+    var delta = Math.min(48, Math.max(0, time - lastFrame));
     lastFrame = time;
 
     if (!pointer.moved) {
       var idleX = width * (0.5 + Math.sin(time * 0.00028) * 0.18);
       var idleY = height * (0.5 + Math.cos(time * 0.00022) * 0.12);
+      var idleDx = idleX - pointer.x;
+      var idleDy = idleY - pointer.y;
+      if (Math.abs(idleDx) + Math.abs(idleDy) > 0.4) {
+        pointer.angle = Math.atan2(idleDy, idleDx);
+      }
       pointer.x = idleX;
       pointer.y = idleY;
-      pushHistory(idleX, idleY);
+      if (time - idleTrailLastPush > 42) {
+        pushHistory(idleX, idleY);
+        idleTrailLastPush = time;
+      }
     }
 
     ctx.clearRect(0, 0, width, height);
@@ -448,10 +597,7 @@
     updateBurstPetals();
     drawBurstPetals();
 
-    for (var j = 0; j < fish.length; j += 1) {
-      fish[j].update(time);
-      fish[j].draw();
-    }
+    updateFishEffects(time, delta);
 
     drawCursor();
     requestAnimationFrame(frame);
@@ -473,17 +619,8 @@
     return Math.min(max, Math.max(min, value));
   }
 
-  function rgba(hex, alpha) {
-    var value = hex.replace("#", "");
-    if (value.length === 3) {
-      value = value.split("").map(function (char) {
-        return char + char;
-      }).join("");
-    }
-    var red = parseInt(value.slice(0, 2), 16);
-    var green = parseInt(value.slice(2, 4), 16);
-    var blue = parseInt(value.slice(4, 6), 16);
-    return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+  function lerp(min, max, amount) {
+    return min + (max - min) * amount;
   }
 
   function resolveLowPower(mode, prefersReduced) {

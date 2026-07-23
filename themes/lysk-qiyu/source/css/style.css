@@ -116,6 +116,39 @@ textarea,
   pointer-events: none;
 }
 
+.qiyu-fish-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint style;
+}
+
+.qiyu-trail-fish,
+.qiyu-companion-fish,
+.qiyu-trail-drop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+.qiyu-trail-fish,
+.qiyu-companion-fish {
+  filter: drop-shadow(0 0 10px rgba(255, 247, 251, 0.28)) drop-shadow(0 0 18px rgba(120, 214, 208, 0.16));
+  transform-origin: center;
+}
+
+.qiyu-trail-drop {
+  filter: drop-shadow(0 0 8px rgba(255, 247, 251, 0.32));
+  transform-origin: center;
+}
+
 .ocean-vignette {
   position: fixed;
   inset: 0;

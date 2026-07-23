@@ -19,6 +19,9 @@
   var avatar = pick(assets.avatar, 'images/avatar.jpg');
   var cursorNormal = pick(assets.cursor_normal, 'images/cursor-normal.png');
   var cursorText = pick(assets.cursor_text, 'images/cursor-text.png');
+  var trailFishA = pick(assets.trail_fish_a, 'images/cursor-trail-fish-a.png');
+  var trailFishB = pick(assets.trail_fish_b, 'images/cursor-trail-fish-b.png');
+  var trailDrop = pick(assets.trail_drop, 'images/cursor-trail-drop.png');
 
   var effectConfig = {
     sakura: toBool(effects.sakura, true),
@@ -31,6 +34,10 @@
     sakuraClickMax: Number(pick(effects.sakura_click_max, 80)),
     density: isReading ? Number(pick(effects.reading_density, 0.45)) : 1,
     lowPowerMode: pick(effects.low_power_mode, 'auto'),
+    trail: {
+      fishImages: [url_for(trailFishA), url_for(trailFishB)],
+      bubbleImage: url_for(trailDrop)
+    },
     cursors: {
       normal: url_for(cursorNormal),
       text: url_for(cursorText)
@@ -52,6 +59,7 @@
     data-effect-config='<%- effectJson %>'
   >
     <canvas id="qiyu-ocean-canvas" aria-hidden="true"></canvas>
+    <div id="qiyu-fish-layer" class="qiyu-fish-layer" aria-hidden="true"></div>
     <div class="ocean-vignette" aria-hidden="true"></div>
     <%- partial('_partial/header') %>
     <main class="site-main" id="content">
