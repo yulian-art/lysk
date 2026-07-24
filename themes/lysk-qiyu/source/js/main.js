@@ -1,53 +1,69 @@
 (function () {
   'use strict';
 
-  var QiyuTheme = window.QiyuTheme || {};
-  var shell = document.querySelector('.theme-shell');
-  var canvas = document.getElementById('qiyu-ocean-canvas');
-  var fishLayer = document.getElementById('qiyu-fish-layer');
-
+  var QiyuTheme = window.QiyuTheme || {}; // 获取全局变量，不存在则创建一个空对象
+  var shell = document.querySelector('.theme-shell'); //通过类选择器获取第一个.theme-shell元素
+  var canvas = document.getElementById('qiyu-ocean-canvas'); //通过ID获取画布元素
+  var fishLayer = document.getElementById('qiyu-fish-layer'); //通过ID获取用于鱼群动画的图层元素
+  // 校验是否存在，后续调用
   if (!shell || !canvas || !QiyuTheme.createConfig || !QiyuTheme.createTrailEffects || !QiyuTheme.createSakuraEffects || !QiyuTheme.createCursorEffects) {
     return;
-  }
+  } // 三个dom元素和四个方法，拖尾特效，樱花特效，光标特效
 
-  var ctx = canvas.getContext('2d', { alpha: true });
-  if (!ctx) return;
-
-  var config = QiyuTheme.createConfig(shell);
+  var ctx = canvas.getContext('2d', { alpha: true }); //获取2D渲染上下文，打开透明通道，以便再背景上绘制半透明特效
+  if (!ctx) return; 
+  //调用createConfig方法，传入主题容器.theme-shell,里面包含颜色，速度等可调参数的配置对象
+  var config = QiyuTheme.createConfig(shell); 
+  // 检测当前指针设备是否为鼠标bool（比如悬停跟随）
   var finePointer = window.matchMedia('(pointer: fine)').matches;
+  // 检查用户系统是否开启了减少动画辅助功能
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  //解析低能耗
   var lowPower = QiyuTheme.utils.resolveLowPower(config.lowPowerMode, reducedMotion);
+  // 用于缓存当前画布的逻辑宽度和像素比dpr，后续将再帧循环中动态更新
   var viewport = {
     width: 0,
     height: 0,
     dpr: 1
   };
+  // 上一帧时间戳performance.now()，用于计算帧间隔
   var lastFrame = 0;
+  // 最后一次触摸交互时间，用于判断空闲状态
   var lastTouchAt = 0;
+  // 空闲状态下拖尾效应的最后一次推送时间
   var idleTrailLastPush = 0;
+  // 指针状态对象
   var pointer = {
+    // 指针当前的坐标，初始设为屏幕中心
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
+    // 当前是否应该跟踪指针位置，鼠标就true
     active: finePointer,
+    // 是否发生过移动，初始化为false
     moved: false,
+    // 指针交互模式
     mode: 'normal',
+    // 指针运动的方向角，初始设为-135°
     angle: -Math.PI * 0.75,
+    // 最后一次移动的时间戳
     lastMoveAt: 0
   };
-
+  // 创建光标特效
   var cursorEffects = QiyuTheme.createCursorEffects({
     ctx: ctx,
     pointer: pointer,
     finePointer: finePointer,
     config: config
   });
+  // 创建拖尾特效
   var trailEffects = QiyuTheme.createTrailEffects({
     config: config,
-    fishLayer: fishLayer,
-    pointer: pointer,
-    lowPower: lowPower,
-    reducedMotion: reducedMotion
+    fishLayer: fishLayer, // 一个dom元素，用于承载鱼群拖尾粒子
+    pointer: pointer, 
+    lowPower: lowPower, // 低功耗标记
+    reducedMotion: reducedMotion // 减少动画标记
   });
+  // 创建樱花特效
   var sakuraEffects = QiyuTheme.createSakuraEffects({
     ctx: ctx,
     config: config,
@@ -64,55 +80,69 @@
   initSakuraLoading(reducedMotion);
   initPaintFrames(reducedMotion);
   initGeneratedToc();
-
+  // 初始化页面中所有带[data-detail-carousel] 属性的轮播组件
   function initDetailCarousels(disableAutoplay) {
+    // 获取所有标记[data-detail-carousel] 的元素做轮播容器
     var carousels = document.querySelectorAll('[data-detail-carousel]');
     if (!carousels.length) return;
-
+    // 遍历每个轮播容器
     Array.prototype.forEach.call(carousels, function (carousel) {
+      //存放所有幻灯片的容器 通过改变其 transform: translateX 来实现滑动
       var track = carousel.querySelector('.detail-carousel-track');
+      // 所有幻灯片元素，用于判断数量，超过两张才能轮播
       var slides = carousel.querySelectorAll('.detail-carousel-slide');
+      // 指示器原点，用于显示当前位置并提供跳转
       var dots = carousel.querySelectorAll('.detail-carousel-dot');
+      // 起始索引
       var index = 0;
+      // 自动播放定时器
       var timer = 0;
+      //记录指针按下时的坐标
       var pointerStart = null;
-
+      // 少于两张就跳过轮播
       if (!track || slides.length < 2) return;
-
+      // 切换函数
       function show(nextIndex) {
+        // 保证循环切换
         index = (nextIndex + slides.length) % slides.length;
+        //移动轨道
         track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        // 更新所有原点，
         Array.prototype.forEach.call(dots, function (dot, dotIndex) {
           dot.classList.toggle('is-active', dotIndex === index);
         });
       }
+      // 定时器控制函数
 
+      // 清除当前定时器并重新初始换为0
       function stop() {
         if (!timer) return;
         window.clearInterval(timer);
         timer = 0;
       }
-
+      // 如果低能耗就不自动播放直接返回
       function start() {
         if (disableAutoplay) return;
+        // 否则先停止旧定时器，然后启动新定时器，2.5秒切换下一张
         stop();
         timer = window.setInterval(function () {
           show(index + 1);
         }, 2500);
       }
-
+      // 重置定时器，常用于交互后重新自动播放
       function restart() {
         stop();
         start();
       }
-
+      //为每个点绑定点击事件，读取data-slide-index属性
       Array.prototype.forEach.call(dots, function (dot) {
         dot.addEventListener('click', function () {
+          // 切换到该索引，重启定时器
           show(Number(dot.getAttribute('data-slide-index')) || 0);
           restart();
         });
       });
-
+      // 鼠标悬停与焦点控制
       carousel.addEventListener('mouseenter', stop, { passive: true });
       carousel.addEventListener('mouseleave', start, { passive: true });
       carousel.addEventListener('focusin', stop);
