@@ -113,5 +113,26 @@
   font-size: 14px;
   text-shadow: 0 0 18px rgba(255, 183, 197, 0.52);
   transform: translateX(-50%);
+  animation: hint-breathe 2.4s ease-in-out infinite;
+  white-space: nowrap;
+
+}
+
+@keyframes hint-breathe {
+  0%,
+  100% {
+    opacity: 0.58;
+    text-shadow: 0 0 14px rgba(255, 183, 197, 0.36);
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    text-shadow:
+      0 0 22px rgba(255, 183, 197, 0.7),
+      0 0 34px rgba(212, 165, 116, 0.28);
+    transform: translateX(-50%) translateY(-4px);
+  }
+
 
 }

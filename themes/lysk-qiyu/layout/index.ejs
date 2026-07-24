@@ -14,144 +14,152 @@
     return output;
   }
 
+  function pick(value, fallback) {
+    return value === undefined || value === null || value === '' ? fallback : value;
+  }
+
+  function normalizeArray(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    var converted = toArray(value);
+    return converted.length ? converted : [];
+  }
+
+  function tagName(tag) {
+    if (typeof tag === 'string') return tag;
+    return tag && (tag.name || tag.slug) ? (tag.name || tag.slug) : String(tag);
+  }
+
+  function trackTitle(track) {
+    return typeof track === 'string' ? track : pick(track && track.title, '神音如祷');
+  }
+
+  function trackArtist(track) {
+    return typeof track === 'string' ? '恋与深空' : pick(track && track.artist, '恋与深空');
+  }
+
   var hero = theme.hero || {};
   var assets = theme.assets || {};
+  var music = theme.music || {};
   var recentCollection = site.posts || [];
   if (recentCollection && typeof recentCollection.sort === 'function' && typeof recentCollection.each === 'function') {
     recentCollection = recentCollection.sort('-date');
   }
-  if (recentCollection && typeof recentCollection.limit === 'function') {
-    recentCollection = recentCollection.limit(8);
-  }
-  var recentPosts = toArray(recentCollection).slice(0, 8);
-  var detailCards = recentPosts.slice(0, 4);
-  while (detailCards.length < 4) detailCards.push(null);
+  var recentPosts = toArray(recentCollection).slice(0, 12);
+  var heroTags = normalizeArray(hero.tags || ['深海', '樱花', '古风', '画家']);
 
-  var heroTags = hero.tags || ['深海', '樱花', '祁煜'];
-  var leftBars = [
-    { width: '42%', height: 8 },
-    { width: '64%', height: 12 },
-    { width: '54%', height: 7 },
-    { width: '70%', height: 10 },
-    { width: '49%', height: 6 },
-    { width: '58%', height: 13 }
+  var carouselImages = normalizeArray(theme.carousel_images || assets.carousel_images);
+  if (!carouselImages.length) {
+    carouselImages = ['images/carousel/1.jpg', 'images/carousel/2.jpg'];
+  }
+
+  var cardImages = normalizeArray(assets.deepsea_cards || theme.deepsea_cards);
+  if (!cardImages.length) {
+    cardImages = ['images/deepsea/card-1.jpg', 'images/deepsea/card-2.jpg', 'images/deepsea/card-3.jpg'];
+  }
+
+  var tracks = normalizeArray(music.deepsea_tracks);
+  if (!tracks.length) {
+    tracks = [{ title: '神音如祷', artist: '恋与深空' }, { title: '霓影偕行', artist: '恋与深空' }, { title: '爱，宇宙，诗王座', artist: '恋与深空' }];
+  }
+
+  var navItems = [
+    { name: '文章', path: '/' },
+    { name: '随行', path: '/tags/' },
+    { name: '关于', path: '/about/' },
+    { name: '归潮', path: '/archives/' }
   ];
-  var navBars = ['62px', '54px', '48px', '58px'];
-  var cardLineSets = [
-    ['72%', '86%', '64%', '78%', '56%'],
-    ['54%', '78%', '68%', '62%', '44%'],
-    ['64%', '84%', '74%', '70%', '52%'],
-    ['48%', '72%', '80%', '58%', '46%']
-  ];
+  var avatar = pick(assets.avatar, 'images/avatar.jpg');
+  var rotateImage = pick(assets.rotate_deepsea, 'images/deepsea/rotate.png');
 %>
 
-<section class="home-scroll" aria-label="首页与详情页">
-  <section class="home-view snap-panel" aria-label="深海樱花首页">
-    <article class="glass-card hero-card">
-      <div class="avatar-frame">
-        <img src="<%- url_for(assets.avatar || 'images/avatar.jpg') %>" alt="<%- theme.author || config.author || 'avatar' %>" class="site-avatar">
+<section class="home-scroll qiyu-home" aria-label="祁煜主题首页">
+  <section class="opening-view snap-panel" aria-label="深海开屏" data-opening-screen>
+    <article class="opening-glass" data-opening-card>
+      <span class="opening-water" aria-hidden="true"></span>
+      <div class="opening-avatar">
+        <img src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '祁煜' %>">
       </div>
       <p class="eyebrow">Love and Deepspace</p>
-      <h1><%- theme.title || config.title || '深海樱花·祁煜' %></h1>
-      <p class="subtitle"><%- theme.subtitle || config.subtitle || '在深海的蓝光里，听见樱花落下' %></p>
-      <p class="hero-copy"><%- hero.quote || theme.description || config.description || '海风把夜色揉成潮汐，樱花在光里缓慢下沉。' %></p>
+      <h1><%- theme.title || config.title || '恋与深空 · 祁煜' %></h1>
+      <p class="subtitle"><%- theme.subtitle || config.subtitle || '晨昏火焰与深海潮汐之间' %></p>
+      <p class="opening-copy"><%- hero.quote || '我诞生于晨昏交替时的火焰，是利莫里亚的最后一任海神。' %></p>
       <div class="hero-tags" aria-label="主题标签">
         <% heroTags.forEach(function(tag) { %>
           <span><%- tag %></span>
         <% }) %>
       </div>
     </article>
-
-    <aside class="post-dock" aria-label="最新文章">
-      <button class="dock-handle" type="button" aria-label="展开最新文章">✦</button>
-      <div class="dock-panel">
-        <h2>最新潮汐</h2>
-        <% if (recentPosts.length) { %>
-          <ol class="dock-list">
-            <% recentPosts.forEach(function(post) { %>
-              <li>
-                <a href="<%- url_for(post.path) %>">
-                  <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
-                  <span><%- post.title || '未命名文章' %></span>
-                </a>
-              </li>
-            <% }) %>
-          </ol>
-        <% } else { %>
-          <p class="empty-note">这片海域还没有新的记录。</p>
-        <% } %>
-      </div>
-    </aside>
-
-    <p class="interaction-hint">向下滚动进入详情</p>
+    <p class="interaction-hint">向下滑动 · 潮汐展开</p>
   </section>
 
-  <section class="detail-view snap-panel" aria-label="详情页">
-    <div class="detail-layout">
-      <aside class="detail-left" aria-hidden="true">
-        <div class="detail-left-dot"></div>
-        <div class="detail-left-lines">
-          <% leftBars.forEach(function(bar, index) { %>
-            <div class="detail-left-line-row detail-left-line-row-<%- index + 1 %>">
-              <span style="width: <%- bar.width %>; height: <%- bar.height %>px;"></span>
-            </div>
-          <% }) %>
+  <section class="deepsea-view snap-panel" id="articles" aria-label="深海内容主页">
+    <div class="deepsea-layout">
+      <aside class="deepsea-left" aria-label="壁纸与音乐">
+        <div class="wallpaper-bubble" data-wallpaper-carousel>
+          <div class="wallpaper-track" data-carousel-track>
+            <% carouselImages.forEach(function(image, index) { %>
+              <div class="wallpaper-slide" style="background-image: url('<%- url_for(image) %>');" role="img" aria-label="深海壁纸 <%- index + 1 %>"></div>
+            <% }) %>
+          </div>
+          <div class="wallpaper-dots" aria-label="壁纸轮播指示器">
+            <% carouselImages.forEach(function(image, index) { %>
+              <button class="wallpaper-dot<%- index === 0 ? ' is-active' : '' %>" type="button" data-slide-index="<%- index %>" aria-label="切换到第 <%- index + 1 %> 张壁纸"></button>
+            <% }) %>
+          </div>
         </div>
-        <div class="detail-left-pill">
-          <span class="detail-pill-dot"></span>
-          <span class="detail-pill-line"></span>
+
+        <div class="music-bubble" data-music-player>
+          <div class="music-disc" aria-hidden="true"></div>
+          <div class="music-copy">
+            <% tracks.forEach(function(track, index) { %>
+              <p class="music-track<%- index === 0 ? ' is-current' : '' %>" data-track-index="<%- index %>">
+                <span class="music-title"><%- trackTitle(track) %></span>
+                <span class="music-artist"><%- trackArtist(track) %></span>
+              </p>
+            <% }) %>
+          </div>
+          <div class="music-actions" aria-label="音乐切换">
+            <button type="button" data-music-prev aria-label="上一首">上一首</button>
+            <button type="button" data-music-next aria-label="下一首">下一首</button>
+          </div>
         </div>
       </aside>
 
-      <section class="detail-right" aria-label="详情页卡片网格">
-        <header class="detail-topbar" aria-hidden="true">
-          <div class="detail-nav-left">
-            <% navBars.forEach(function(width, index) { %>
-              <span class="detail-nav-item detail-nav-item-<%- index + 1 %>" style="--nav-width: <%- width %>;"></span>
-            <% }) %>
-          </div>
-          <div class="detail-nav-right">
-            <span class="detail-action-dot"></span>
-            <span class="detail-action-dot"></span>
-            <span class="detail-action-dot"></span>
-            <span class="detail-action-line"></span>
-          </div>
-        </header>
-        <div class="detail-divider" aria-hidden="true"></div>
-
-        <div class="detail-grid">
-          <% detailCards.forEach(function(post, index) {
-            var lines = cardLineSets[index] || cardLineSets[0];
-            var label = post && post.title ? post.title : '详情卡片 ' + (index + 1);
-            var href = post && post.path ? url_for(post.path) : '#';
-          %>
-            <a class="detail-card detail-card-<%- index + 1 %>" href="<%- href %>" aria-label="<%- label %>" style="--line-a: <%- lines[0] %>; --line-b: <%- lines[1] %>; --line-c: <%- lines[2] %>; --line-d: <%- lines[3] %>; --line-e: <%- lines[4] %>;">
-              <div class="detail-card-media" aria-hidden="true">
-                <div class="detail-card-badge detail-card-badge-left">
-                  <span class="detail-card-badge-dot"></span>
-                  <span class="detail-card-badge-line"></span>
-                </div>
-                <div class="detail-card-badge detail-card-badge-right">
-                  <span class="detail-card-badge-dot"></span>
-                  <span class="detail-card-badge-line"></span>
-                </div>
-              </div>
-              <div class="detail-card-copy" aria-hidden="true">
-                <span class="detail-copy-kicker"></span>
-                <div class="detail-copy-title">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <div class="detail-copy-meta">
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            </a>
+      <section class="deepsea-right" aria-label="文章列表">
+        <nav class="deepsea-nav" aria-label="深海导航">
+          <% navItems.forEach(function(item) { %>
+            <a href="<%- url_for(item.path) %>"><%- item.name %></a>
           <% }) %>
+        </nav>
+
+        <div class="deepsea-grid-scroll">
+          <% if (recentPosts.length) { %>
+            <div class="deepsea-grid">
+              <% recentPosts.forEach(function(post, index) {
+                var tags = normalizeArray(post.tags).map(tagName).slice(0, 2);
+                var cardImage = cardImages[index % cardImages.length];
+              %>
+                <a class="deepsea-article-card" href="<%- url_for(post.path) %>" aria-label="<%- post.title || '未命名文章' %>">
+                  <span class="deepsea-card-cover" style="background-image: url('<%- url_for(cardImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
+                  <span class="deepsea-card-body">
+                    <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+                    <strong><%- post.title || '未命名文章' %></strong>
+                    <% if (tags.length) { %>
+                      <span class="deepsea-card-tags"><%- tags.map(function(tag) { return '#' + tag; }).join('  ') %></span>
+                    <% } %>
+                  </span>
+                </a>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="deepsea-empty">这片海域还没有新的记录。</p>
+          <% } %>
         </div>
       </section>
     </div>
+    <button class="theme-rotate-button deepsea-rotate" type="button" data-scroll-top aria-label="回到顶部">
+      <img src="<%- url_for(rotateImage) %>" alt="">
+    </button>
   </section>
 </section>

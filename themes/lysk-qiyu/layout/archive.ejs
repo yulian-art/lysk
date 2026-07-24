@@ -1,8 +1,62 @@
-<section class="glass-card listing-card">
-  <header class="listing-header">
-    <p class="eyebrow">Archive</p>
-    <h1>归档</h1>
-    <p>把所有潮汐，按时间收进深海。</p>
+<%
+  function normalizePosts(collection) {
+    var output = [];
+    if (!collection) return output;
+    if (typeof collection.sort === 'function' && typeof collection.each === 'function') {
+      collection = collection.sort('-date');
+    }
+    if (typeof collection.each === 'function') {
+      collection.each(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.forEach === 'function') {
+      collection.forEach(function(item) { output.push(item); });
+      return output;
+    }
+    if (typeof collection.toArray === 'function') return collection.toArray();
+    return output;
+  }
+
+  function normalizeArray(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return normalizePosts(value);
+  }
+
+  var assets = theme.assets || {};
+  var posts = normalizePosts(page.posts || site.posts);
+  var coverImages = normalizeArray(assets.deepsea_cards);
+  if (!coverImages.length) coverImages = ['images/deepsea/card-1.jpg', 'images/deepsea/card-2.jpg', 'images/deepsea/card-3.jpg'];
+  var painterDay = assets.painter_day || 'images/deepsea/painter-day.jpg';
+  var painterNight = assets.painter_night || 'images/deepsea/painter-night.jpg';
+%>
+
+<section class="painter-archive" style="--painter-day: url('<%- url_for(painterDay) %>'); --painter-night: url('<%- url_for(painterNight) %>');" aria-label="画家主题归潮页面">
+  <header class="painter-header">
+    <p class="eyebrow">Return Tide</p>
+    <h1>归潮</h1>
+    <p>他的画作大多以海洋文明“利莫里亚”为主题，风格像烈火一样浪漫炽烈。</p>
   </header>
-  <%- partial('_partial/post-list', { posts: page.posts || site.posts, emptyText: '还没有可归档的文章。' }) %>
+
+  <% if (posts.length) { %>
+    <div class="paint-timeline">
+      <% posts.forEach(function(post, index) {
+        var coverImage = coverImages[index % coverImages.length];
+      %>
+        <article class="paint-entry" data-paint-frame>
+          <a class="paint-frame" href="<%- url_for(post.path) %>">
+            <span class="paint-cover" style="background-image: url('<%- url_for(coverImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
+            <span class="paint-copy">
+              <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+              <strong><%- post.title || '未命名文章' %></strong>
+            </span>
+          </a>
+        </article>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="painter-empty">还没有可归档的文章。</p>
+  <% } %>
+
+  <button class="theme-rotate-button painter-rotate" type="button" data-scroll-top aria-label="回到顶部"></button>
 </section>

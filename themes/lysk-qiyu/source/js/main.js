@@ -56,6 +56,310 @@
     reducedMotion: reducedMotion
   });
 
+  initDetailCarousels(reducedMotion);
+  initOpeningTransition(reducedMotion);
+  initWallpaperCarousels(reducedMotion);
+  initMusicBubbles();
+  initScrollTopButtons();
+  initSakuraLoading(reducedMotion);
+  initPaintFrames(reducedMotion);
+  initGeneratedToc();
+
+  function initDetailCarousels(disableAutoplay) {
+    var carousels = document.querySelectorAll('[data-detail-carousel]');
+    if (!carousels.length) return;
+
+    Array.prototype.forEach.call(carousels, function (carousel) {
+      var track = carousel.querySelector('.detail-carousel-track');
+      var slides = carousel.querySelectorAll('.detail-carousel-slide');
+      var dots = carousel.querySelectorAll('.detail-carousel-dot');
+      var index = 0;
+      var timer = 0;
+      var pointerStart = null;
+
+      if (!track || slides.length < 2) return;
+
+      function show(nextIndex) {
+        index = (nextIndex + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        Array.prototype.forEach.call(dots, function (dot, dotIndex) {
+          dot.classList.toggle('is-active', dotIndex === index);
+        });
+      }
+
+      function stop() {
+        if (!timer) return;
+        window.clearInterval(timer);
+        timer = 0;
+      }
+
+      function start() {
+        if (disableAutoplay) return;
+        stop();
+        timer = window.setInterval(function () {
+          show(index + 1);
+        }, 2500);
+      }
+
+      function restart() {
+        stop();
+        start();
+      }
+
+      Array.prototype.forEach.call(dots, function (dot) {
+        dot.addEventListener('click', function () {
+          show(Number(dot.getAttribute('data-slide-index')) || 0);
+          restart();
+        });
+      });
+
+      carousel.addEventListener('mouseenter', stop, { passive: true });
+      carousel.addEventListener('mouseleave', start, { passive: true });
+      carousel.addEventListener('focusin', stop);
+      carousel.addEventListener('focusout', start);
+      carousel.addEventListener('pointerdown', function (event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        pointerStart = { x: event.clientX, y: event.clientY };
+      }, { passive: true });
+      carousel.addEventListener('pointerup', function (event) {
+        if (!pointerStart) return;
+        var dx = event.clientX - pointerStart.x;
+        var dy = event.clientY - pointerStart.y;
+        pointerStart = null;
+        if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+        show(index + (dx < 0 ? 1 : -1));
+        restart();
+      }, { passive: true });
+      carousel.addEventListener('pointercancel', function () {
+        pointerStart = null;
+      }, { passive: true });
+
+      show(0);
+      start();
+    });
+  }
+
+  function initOpeningTransition(disableMotion) {
+    var home = document.querySelector('.qiyu-home');
+    var opening = document.querySelector('[data-opening-screen]');
+    var scroller = document.querySelector('.page-kind-home .site-main');
+    if (!home || !opening || !scroller) return;
+
+    var running = false;
+    var completed = false;
+
+    function syncStateFromScroll() {
+      if (scroller.scrollTop > opening.offsetHeight * 0.35) {
+        completed = true;
+        home.classList.add('is-opening-complete');
+        return;
+      }
+      if (scroller.scrollTop > 24) return;
+      completed = false;
+      running = false;
+      home.classList.remove('is-opening-transition');
+      home.classList.remove('is-opening-complete');
+    }
+
+    function runTransition() {
+      if (running) return;
+      running = true;
+      completed = true;
+      home.classList.add('is-opening-transition');
+
+      if (disableMotion) {
+        scroller.scrollTop = opening.offsetHeight;
+        home.classList.add('is-opening-complete');
+        running = false;
+        return;
+      }
+
+      window.setTimeout(function () {
+        scroller.scrollTo({ top: opening.offsetHeight, behavior: 'smooth' });
+        home.classList.add('is-opening-complete');
+        running = false;
+      }, 1280);
+    }
+
+    opening.addEventListener('wheel', function (event) {
+      if (event.deltaY <= 0 || scroller.scrollTop > 8 || completed) return;
+      event.preventDefault();
+      runTransition();
+    }, { passive: false });
+
+    opening.addEventListener('touchmove', function () {
+      if (scroller.scrollTop > 8 || completed) return;
+      runTransition();
+    }, { passive: true });
+
+    scroller.addEventListener('scroll', syncStateFromScroll, { passive: true });
+  }
+
+  function initWallpaperCarousels(disableAutoplay) {
+    var carousels = document.querySelectorAll('[data-wallpaper-carousel]');
+    if (!carousels.length) return;
+
+    Array.prototype.forEach.call(carousels, function (carousel) {
+      var track = carousel.querySelector('[data-carousel-track]');
+      var slides = carousel.querySelectorAll('.wallpaper-slide');
+      var dots = carousel.querySelectorAll('.wallpaper-dot');
+      var index = 0;
+      var timer = 0;
+      if (!track || slides.length < 2) return;
+
+      function show(nextIndex) {
+        index = (nextIndex + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        carousel.classList.remove('is-sliding');
+        void carousel.offsetWidth;
+        carousel.classList.add('is-sliding');
+        Array.prototype.forEach.call(dots, function (dot, dotIndex) {
+          dot.classList.toggle('is-active', dotIndex === index);
+        });
+      }
+
+      function start() {
+        if (disableAutoplay) return;
+        stop();
+        timer = window.setInterval(function () {
+          show(index + 1);
+        }, 3200);
+      }
+
+      function stop() {
+        if (!timer) return;
+        window.clearInterval(timer);
+        timer = 0;
+      }
+
+      Array.prototype.forEach.call(dots, function (dot) {
+        dot.addEventListener('click', function () {
+          show(Number(dot.getAttribute('data-slide-index')) || 0);
+          start();
+        });
+      });
+
+      carousel.addEventListener('mouseenter', stop, { passive: true });
+      carousel.addEventListener('mouseleave', start, { passive: true });
+      show(0);
+      start();
+    });
+  }
+
+  function initMusicBubbles() {
+    var players = document.querySelectorAll('[data-music-player]');
+    if (!players.length) return;
+
+    Array.prototype.forEach.call(players, function (player) {
+      var tracks = player.querySelectorAll('.music-track');
+      var prev = player.querySelector('[data-music-prev]');
+      var next = player.querySelector('[data-music-next]');
+      var index = 0;
+      if (!tracks.length) return;
+
+      function show(nextIndex) {
+        index = (nextIndex + tracks.length) % tracks.length;
+        Array.prototype.forEach.call(tracks, function (track, trackIndex) {
+          track.classList.toggle('is-current', trackIndex === index);
+        });
+        player.classList.remove('is-popping');
+        void player.offsetWidth;
+        player.classList.add('is-popping');
+      }
+
+      if (prev) {
+        prev.addEventListener('click', function () {
+          show(index - 1);
+        });
+      }
+
+      if (next) {
+        next.addEventListener('click', function () {
+          show(index + 1);
+        });
+      }
+    });
+  }
+
+  function initScrollTopButtons() {
+    var buttons = document.querySelectorAll('[data-scroll-top]');
+    if (!buttons.length) return;
+
+    Array.prototype.forEach.call(buttons, function (button) {
+      button.addEventListener('click', function () {
+        var homeScroller = document.querySelector('.page-kind-home .site-main');
+        if (homeScroller && homeScroller.contains(button)) {
+          homeScroller.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  }
+
+  function initSakuraLoading(disableMotion) {
+    var loaders = document.querySelectorAll('[data-sakura-loading]');
+    if (!loaders.length) return;
+    Array.prototype.forEach.call(loaders, function (loader) {
+      window.setTimeout(function () {
+        loader.classList.add('is-hidden');
+      }, disableMotion ? 60 : 860);
+    });
+  }
+
+  function initPaintFrames(disableMotion) {
+    var frames = document.querySelectorAll('[data-paint-frame]');
+    if (!frames.length) return;
+
+    function reveal(frame) {
+      frame.classList.add('is-visible');
+      if (disableMotion) return;
+      frame.classList.add('is-shaking');
+      window.setTimeout(function () {
+        frame.classList.remove('is-shaking');
+      }, 320);
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      Array.prototype.forEach.call(frames, reveal);
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      Array.prototype.forEach.call(entries, function (entry) {
+        if (!entry.isIntersecting) return;
+        reveal(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.28, rootMargin: '0px 0px -10% 0px' });
+
+    Array.prototype.forEach.call(frames, function (frame) {
+      observer.observe(frame);
+    });
+  }
+
+  function initGeneratedToc() {
+    var toc = document.querySelector('.sakura-toc');
+    if (!toc) return;
+    var selector = toc.getAttribute('data-toc-target') || '.article-content';
+    var target = document.querySelector(selector);
+    if (!target) return;
+    var headings = target.querySelectorAll('h2, h3');
+    if (!headings.length) return;
+
+    toc.textContent = '';
+    Array.prototype.forEach.call(headings, function (heading, index) {
+      if (!heading.id) {
+        heading.id = 'section-' + index;
+      }
+      var link = document.createElement('a');
+      link.href = '#' + heading.id;
+      link.textContent = heading.textContent || ('章节 ' + (index + 1));
+      link.setAttribute('data-level', heading.tagName.slice(1));
+      toc.appendChild(link);
+    });
+  }
+
   function bindEvents() {
     window.addEventListener('resize', resize, { passive: true });
     window.addEventListener('pointermove', onPointerMove, { passive: true });

@@ -14,43 +14,103 @@
     return output;
   }
 
+  function pick(value, fallback) {
+    return value === undefined || value === null || value === '' ? fallback : value;
+  }
+
   var tags = listFrom(page.tags);
   var categories = listFrom(page.categories);
+  var assets = theme.assets || {};
+  var music = theme.music || {};
+  var sakuraCover = pick(assets.sakura_cover || theme.cover_image || theme.detail_cover, 'images/detail-cover.jpg');
+  var sakuraTitle = pick(music.sakura_title, '花间行');
 %>
 
-<article class="glass-card content-card reading-card">
-  <header class="article-header">
-    <p class="eyebrow">Deep Sea Note</p>
-    <h1><%- page.title || '未命名文章' %></h1>
-    <div class="post-meta">
-      <time datetime="<%- date_xml(page.date) %>"><%- date(page.date, config.date_format || 'YYYY-MM-DD') %></time>
-      <% if (categories.length) { %>
-        <span>·</span>
-        <% categories.forEach(function(category, index) { %>
-          <a href="<%- url_for(category.path) %>"><%- category.name %></a><%- index < categories.length - 1 ? ' / ' : '' %>
-        <% }) %>
-      <% } %>
+<div class="sakura-loading" data-sakura-loading style="--sakura-loading-image: url('<%- url_for(sakuraCover) %>');" aria-hidden="true">
+  <div class="sakura-loading-media"></div>
+  <div class="sakura-loading-glow"></div>
+</div>
+
+<section class="sakura-reading" aria-label="樱花主题文章详情">
+  <aside class="sakura-sidebar" aria-label="文章侧栏">
+    <section class="sakura-panel sakura-outline-panel">
+      <p class="eyebrow">Outline</p>
+      <h2>目录</h2>
+      <nav class="sakura-toc" data-toc-target=".sakura-article-content" aria-label="文章目录">
+        <p class="sakura-toc-empty">章节会随文章生成。</p>
+      </nav>
+    </section>
+
+    <section class="sakura-panel sakura-tags-panel">
+      <p class="eyebrow">Petals</p>
+      <h2>标签云</h2>
+      <div class="sakura-tag-cloud">
+        <% if (tags.length) { %>
+          <% tags.forEach(function(tag) { %>
+            <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
+          <% }) %>
+        <% } else if (categories.length) { %>
+          <% categories.forEach(function(category) { %>
+            <a href="<%- url_for(category.path) %>"><%- category.name %></a>
+          <% }) %>
+        <% } else { %>
+          <span>樱花</span>
+          <span>深海</span>
+          <span>祁煜</span>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="sakura-music-panel" aria-label="樱花主题音乐播放器">
+      <span class="sakura-music-disc" aria-hidden="true"></span>
+      <div>
+        <strong><%- sakuraTitle %></strong>
+        <span>恋与深空</span>
+      </div>
+    </section>
+  </aside>
+
+  <section class="sakura-article-wrap">
+    <div class="sakura-cover" style="background-image: url('<%- url_for(sakuraCover) %>');" role="img" aria-label="樱花主题背景图">
+      <blockquote>浪漫主义的根源，在画里，更在画外。</blockquote>
     </div>
-  </header>
 
-  <div class="article-content">
-    <%- page.content %>
-  </div>
+    <article class="sakura-content-panel">
+      <header class="article-header">
+        <p class="eyebrow">Sakura Note</p>
+        <h1><%- page.title || '未命名文章' %></h1>
+        <div class="post-meta">
+          <time datetime="<%- date_xml(page.date) %>"><%- date(page.date, config.date_format || 'YYYY-MM-DD') %></time>
+          <% if (categories.length) { %>
+            <span>·</span>
+            <% categories.forEach(function(category, index) { %>
+              <a href="<%- url_for(category.path) %>"><%- category.name %></a><%- index < categories.length - 1 ? ' / ' : '' %>
+            <% }) %>
+          <% } %>
+        </div>
+      </header>
 
-  <% if (tags.length) { %>
-    <footer class="article-tags" aria-label="文章标签">
-      <% tags.forEach(function(tag) { %>
-        <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
-      <% }) %>
-    </footer>
-  <% } %>
+      <div class="article-content sakura-article-content">
+        <%- page.content %>
+      </div>
 
-  <nav class="post-pager" aria-label="文章导航">
-    <% if (page.prev) { %>
-      <a href="<%- url_for(page.prev.path) %>" class="pager-link prev">上一篇 · <%- page.prev.title || '未命名文章' %></a>
-    <% } %>
-    <% if (page.next) { %>
-      <a href="<%- url_for(page.next.path) %>" class="pager-link next">下一篇 · <%- page.next.title || '未命名文章' %></a>
-    <% } %>
-  </nav>
-</article>
+      <% if (tags.length) { %>
+        <footer class="article-tags" aria-label="文章标签">
+          <% tags.forEach(function(tag) { %>
+            <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
+          <% }) %>
+        </footer>
+      <% } %>
+
+      <nav class="post-pager" aria-label="文章导航">
+        <% if (page.prev) { %>
+          <a href="<%- url_for(page.prev.path) %>" class="pager-link prev">上一篇 · <%- page.prev.title || '未命名文章' %></a>
+        <% } %>
+        <% if (page.next) { %>
+          <a href="<%- url_for(page.next.path) %>" class="pager-link next">下一篇 · <%- page.next.title || '未命名文章' %></a>
+        <% } %>
+      </nav>
+    </article>
+  </section>
+  <button class="theme-rotate-button sakura-rotate" type="button" data-scroll-top aria-label="回到顶部"></button>
+</section>

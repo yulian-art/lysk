@@ -1,40 +1,47 @@
-# 深海樱花·祁煜 Hexo 主题配置
+# 恋与深空 · 祁煜 Hexo 主题配置
 # 修改本文件后运行 `hexo clean && hexo generate` 让配置重新生效。
 
 # 站点展示信息。未填写时会回退到根目录 `_config.yml` 中的 Hexo 配置。
-title: 深海樱花·祁煜
-subtitle: 在深海的蓝光里，听见樱花落下
+title: 恋与深空 · 祁煜
+subtitle: 晨昏火焰与深海潮汐之间
 author: julien
-description: 以《恋与深空》祁煜的梦幻深海意象与樱花光影为核心的沉浸式 Hexo 主题。
+description: 以《恋与深空》祁煜的深海、樱花、古风与画家意象构建的沉浸式 Hexo 主题。
 
-# 首页主卡片文案与标签。
+# 开屏页主卡片文案与标签。
 hero:
-  quote: 海风把夜色揉成潮汐，樱花在光里缓慢下沉。这里收拢梦、诗、记录，与属于祁煜的蓝色心跳。
+  quote: 我诞生于晨昏交替时的火焰，是利莫里亚的最后一任海神。
   tags:
     - 深海
     - 樱花
-    - 祁煜
-    - 恋与深空
+    - 古风
+    - 画家
 
 # 导航菜单。键为显示文字，值为链接。
 menu:
-  首页: /
-  归档: /archives/
-  分类: /categories/
-  标签: /tags/
+  文章: /
+  随行: /tags/
+  关于: /about/
+  归潮: /archives/
 
 # 社交链接。留空对象即可隐藏。
-social:
-  GitHub: https://github.com
+social: {}
 
-# 背景音乐。默认关闭，开启后填写 src。
+# 背景音乐。默认关闭，页面内播放器会在未配置音频时显示视觉外壳。
 music:
   enable: false
   src: ""
   autoplay: false
   loop: true
+  deepsea_tracks:
+    - title: 神音如祷
+      artist: 恋与深空
+    - title: 霓影偕行
+      artist: 恋与深空
+    - title: 爱，宇宙，诗王座
+      artist: 恋与深空
+  sakura_title: 花间行
 
-# 特效配置。
+# 特效配置。光标拖尾模块保持原设计，不在本次改动中调整。
 effects:
   sakura: true
   falling_sakura: true
@@ -51,7 +58,7 @@ effects:
 glass:
   color: rgba(12, 22, 39, 0.54)
   opacity: 0.74
-  border_color: rgba(255, 183, 197, 0.32)
+  border_color: rgba(255, 255, 255, 0.10)
   blur: 16
 
 # 主题内置资源。由根目录 PICTURE 文件夹复制而来。
@@ -63,3 +70,24 @@ assets:
   trail_fish_a: images/cursor-trail-fish-a.png
   trail_fish_b: images/cursor-trail-fish-b.png
   trail_drop: images/cursor-trail-drop.png
+  rotate_deepsea: images/deepsea/rotate.png
+  sakura_cover: images/detail-cover.jpg
+  ancient_day: images/deepsea/ancient-day.jpg
+  ancient_night: images/deepsea/ancient-night.jpg
+  painter_day: images/deepsea/painter-day.jpg
+  painter_night: images/deepsea/painter-night.jpg
+  deepsea_cards:
+    - images/deepsea/card-1.jpg
+    - images/deepsea/card-2.jpg
+    - images/deepsea/card-3.jpg
+
+# 深海内容页左侧轮播。路径相对于主题 source 目录。
+carousel_images:
+  - images/carousel/1.jpg
+  - images/carousel/2.jpg
+cover_image: images/detail-cover.jpg
+detail_title: 深海里的温柔旅人
+detail_tags:
+  - 深海
+  - 祁煜
+  - 利莫里亚

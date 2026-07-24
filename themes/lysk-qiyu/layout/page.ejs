@@ -1,9 +1,85 @@
-<article class="glass-card content-card page-card">
-  <header class="article-header">
-    <p class="eyebrow">Moonlit Page</p>
-    <h1><%- page.title || '独立页面' %></h1>
-  </header>
-  <div class="article-content">
-    <%- page.content %>
-  </div>
-</article>
+<%
+  function postCount(collection) {
+    if (!collection) return 0;
+    if (typeof collection.length === 'number') return collection.length;
+    if (typeof collection.count === 'function') return collection.count();
+    if (typeof collection.toArray === 'function') return collection.toArray().length;
+    return 0;
+  }
+
+  function heatClass(index, offset) {
+    return 'heat-cell heat-level-' + ((index * 7 + offset) % 5);
+  }
+
+  var assets = theme.assets || {};
+  var pagePath = String(page.path || '');
+  var isAbout = pagePath.indexOf('about/') === 0 || pagePath === 'about/index.html' || page.slug === 'about';
+  var avatar = assets.avatar || 'images/avatar.jpg';
+  var ancientDay = assets.ancient_day || 'images/deepsea/ancient-day.jpg';
+  var ancientNight = assets.ancient_night || 'images/deepsea/ancient-night.jpg';
+  var totalPosts = postCount(site.posts);
+%>
+
+<% if (isAbout) { %>
+  <section class="ancient-about" style="--ancient-day: url('<%- url_for(ancientDay) %>'); --ancient-night: url('<%- url_for(ancientNight) %>');" aria-label="古风主题关于页面">
+    <aside class="ancient-profile">
+      <img src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '头像' %>">
+      <h1><%- theme.author || config.author || 'julien' %></h1>
+      <p>浪漫纯爱的利莫里亚小海神 · 冷酷柔情潜行者 · 临空市艺术家</p>
+      <blockquote>他是浪漫纯爱的利莫里亚小海神，是冷酷柔情潜行者，更是临空市才华横溢的大艺术家。</blockquote>
+    </aside>
+
+    <section class="ancient-records" aria-label="访问与提交记录">
+      <section class="ink-panel">
+        <header>
+          <p class="eyebrow">GitHub</p>
+          <h2>提交记录</h2>
+        </header>
+        <div class="ink-heatmap" aria-hidden="true">
+          <% for (var i = 0; i < 84; i++) { %>
+            <span class="<%- heatClass(i, 2) %>"></span>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="ink-panel">
+        <header>
+          <p class="eyebrow">Blog</p>
+          <h2>博客记录</h2>
+        </header>
+        <div class="ink-heatmap" aria-hidden="true">
+          <% for (var j = 0; j < 84; j++) { %>
+            <span class="<%- heatClass(j, 4) %>"></span>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="ink-panel ancient-visits">
+        <header>
+          <p class="eyebrow">Tide Count</p>
+          <h2>访问量统计</h2>
+        </header>
+        <div class="visit-number"><%- totalPosts %></div>
+        <p>篇潮汐记录被收进这片海。</p>
+      </section>
+
+      <% if (page.content) { %>
+        <section class="ink-panel ancient-page-content">
+          <div class="article-content">
+            <%- page.content %>
+          </div>
+        </section>
+      <% } %>
+    </section>
+  </section>
+<% } else { %>
+  <article class="glass-card content-card page-card">
+    <header class="article-header">
+      <p class="eyebrow">Moonlit Page</p>
+      <h1><%- page.title || '独立页面' %></h1>
+    </header>
+    <div class="article-content">
+      <%- page.content %>
+    </div>
+  </article>
+<% } %>
