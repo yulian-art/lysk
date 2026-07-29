@@ -143,12 +143,17 @@
         });
       });
       // 鼠标悬停与焦点控制
+      // 鼠标进入轮播区时自动暂停播放，离开时恢复
       carousel.addEventListener('mouseenter', stop, { passive: true });
       carousel.addEventListener('mouseleave', start, { passive: true });
+      // 鼠标换成键盘了
       carousel.addEventListener('focusin', stop);
       carousel.addEventListener('focusout', start);
+      // 指针或触摸拖拽滑动
       carousel.addEventListener('pointerdown', function (event) {
+        //button !== 0对于鼠标只响应左键
         if (event.pointerType === 'mouse' && event.button !== 0) return;
+        //记录按下位置
         pointerStart = { x: event.clientX, y: event.clientY };
       }, { passive: true });
       carousel.addEventListener('pointerup', function (event) {
@@ -156,6 +161,7 @@
         var dx = event.clientX - pointerStart.x;
         var dy = event.clientY - pointerStart.y;
         pointerStart = null;
+        // 水平移动必须大于42px
         if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
         show(index + (dx < 0 ? 1 : -1));
         restart();
