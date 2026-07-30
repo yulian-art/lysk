@@ -18,7 +18,9 @@
     var trailDrops = [];
     var fishAssets = createFishAssets(config.trail.fishImages);
     var bubbleImageSrc = config.trail.bubbleImage || '';
-
+    //将图片 URL 数组转换为资产对象数组
+    //为每个鱼图片预设一个基础角度
+    // 得不同鱼种有不同初始朝向
     function createFishAssets(images) {
       return images.map(function (src, index) {
         return {
@@ -27,7 +29,7 @@
         };
       });
     }
-
+    //创建 img 元素，预置类名、异步解码、禁止拖拽，初始透明度为 0（隐藏），避免闪动。
     function createTrailImage(src, className) {
       var image = document.createElement('img');
       image.className = className;
@@ -47,7 +49,8 @@
         life: life === undefined ? 1 : life
       };
     }
-
+    //初始化历史点，形成一个近似椭圆的分布 
+    // 避免刚加载时鱼群重叠在一点。
     function seed(width, height) {
       history.length = 0;
 
@@ -62,7 +65,8 @@
         ));
       }
     }
-
+    // 鼠标移动时调用，将新的鼠标位置插入到 history 头部。
+    // 新位置与头部距离小于 2px，则认为没有移动，只更新头部坐标、角度和生命值（防止频繁添加重复点）。
     function push(x, y) {
       var head = history[0];
       if (head && Math.hypot(x - head.x, y - head.y) < 2) {
@@ -82,7 +86,8 @@
     function hide(node) {
       node.style.opacity = '0';
     }
-
+    //计算某历史点处的运动方向角，优先使用前一点（较旧）与当前点的方向，
+    // 若距离过小则改用后一点（较新），确保角度平滑
     function resolveAngle(index) {
       var point = history[index];
       var previous = history[Math.max(0, index - 1)];
@@ -97,11 +102,11 @@
 
       return point ? point.angle : pointer.angle;
     }
-
+    // 当鼠标停止移动超过 90ms 后，开始衰减所有历史点的 life 值。
     function updateFade(time, delta) {
-      if (!pointer.moved || time - pointer.lastMoveAt <= 90) return;
+      if (!pointer.moved || time - pointer.lastMoveAt <= 30) return;
 
-      var decay = delta / (lowPower ? 760 : 1120);
+      var decay = delta / (lowPower ?300 : 500);
       for (var i = 0; i < history.length; i += 1) {
         history[i].life = Math.max(0, history[i].life - decay);
       }

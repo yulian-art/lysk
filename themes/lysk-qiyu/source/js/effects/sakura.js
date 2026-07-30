@@ -1,5 +1,6 @@
 (function (global) {
   'use strict';
+/*创建樱花粒子特效 */
 
   var QiyuTheme = global.QiyuTheme || {};
   var utils = QiyuTheme.utils;
@@ -7,9 +8,9 @@
   QiyuTheme.createSakuraEffects = function (options) {
     var ctx = options.ctx;
     var config = options.config;
-    var viewport = options.viewport;
+    var viewport = options.viewport;  //视口尺寸，用于粒子边界判断
     var lowPower = options.lowPower;
-    var reducedMotion = options.reducedMotion;
+    var reducedMotion = options.reducedMotion;  //
     var burstPetals = [];
     var fallingPetals = [];
 
@@ -22,9 +23,15 @@
       ctx.strokeStyle = 'rgba(255, 247, 251, 0.56)';
       ctx.lineWidth = 0.6;
       ctx.beginPath();
-      ctx.moveTo(0, -size);
-      ctx.bezierCurveTo(size * 0.95, -size * 0.78, size * 0.92, size * 0.48, 0, size);
-      ctx.bezierCurveTo(-size * 0.92, size * 0.48, -size * 0.95, -size * 0.78, 0, -size);
+      // 在绘制时生成随机偏移因子（但保持对称）
+var wave = 0.92 + Math.random() * 0.08;
+var cx1 = size * 0.95 * wave;
+var cy1 = -size * 0.78 * wave;
+var cx2 = size * 0.92 * wave;
+var cy2 = size * 0.48 * wave;
+ctx.moveTo(0, -size);
+ctx.bezierCurveTo(cx1, cy1, cx2, cy2, 0, size);
+ctx.bezierCurveTo(-cx2, cy2, -cx1, cy1, 0, -size); // 注意顺序和符号
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
@@ -52,6 +59,7 @@
       this.x += this.vx + Math.sin(time * this.swing + this.phase) * 0.28;
       this.y += this.vy;
       this.rotate += this.rotateSpeed;
+      //当粒子完全离开屏幕（超出下方或水平过远）时，调用 reset(false) 将其重置到顶部，形成循环。
       if (this.y > viewport.height + 40 || this.x < -80 || this.x > viewport.width + 80) {
         this.reset(false);
       }
@@ -60,7 +68,7 @@
     FallingPetal.prototype.draw = function () {
       drawPetal(this.x, this.y, this.size, this.rotate, this.alpha);
     };
-
+    //创建飘落樱花 
     function createFallingPetals() {
       fallingPetals.length = 0;
       if (!config.sakura || !config.fallingSakura || reducedMotion) return;
@@ -70,7 +78,7 @@
         fallingPetals.push(new FallingPetal());
       }
     }
-
+    // 爆破特效
     function burst(x, y) {
       var min = Math.max(1, Number(config.sakuraClickMin) || 50);
       var max = Math.max(min, Number(config.sakuraClickMax) || 80);
@@ -99,7 +107,7 @@
         burstPetals.splice(0, burstPetals.length - cap);
       }
     }
-
+    // 更新爆破粒子
     function updateBurst() {
       for (var i = burstPetals.length - 1; i >= 0; i -= 1) {
         var petal = burstPetals[i];
@@ -115,7 +123,9 @@
         }
       }
     }
-
+    //
+    //
+    // 主更新循环
     function update(time) {
       for (var i = 0; i < fallingPetals.length; i += 1) {
         fallingPetals[i].update(time);
