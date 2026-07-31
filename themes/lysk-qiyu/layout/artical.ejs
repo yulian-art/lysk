@@ -22,6 +22,21 @@
   if (!carouselImages.length) carouselImages = ['images/carousel/1.jpg', 'images/carousel/2.jpg'];
   if (!cardImages.length) cardImages = ['images/deepsea/card-1.jpg', 'images/deepsea/card-2.jpg', 'images/deepsea/card-3.jpg'];
   if (!tracks.length) tracks = [{ title: 'Shen Yin', artist: 'Love and Deepspace' }];
+  var playerAudio = tracks.map(function (track) {
+    var source = typeof track === 'string' ? music.src : (track && (track.url || track.src || music.src));
+    if (!source) return null;
+    return {
+      name: trackTitle(track),
+      artist: trackArtist(track),
+      url: url_for(source),
+      cover: typeof track === 'object' && track.cover ? url_for(track.cover) : undefined
+    };
+  }).filter(function (track) { return track && track.url; });
+  var playerConfig = JSON.stringify({
+    audio: playerAudio,
+    autoplay: music.autoplay === true,
+    loop: music.loop === false ? 'none' : 'all'
+  }).replace(/'/g, '&#39;');
   var navItems = [{ name: 'Articles', path: '/' }, { name: 'Tags', path: '/tags/' }, { name: 'About', path: '/about/' }, { name: 'Archives', path: '/archives/' }];
   var rotateImage = pick(assets.rotate_deepsea, 'images/deepsea/rotate.png');
 %>
@@ -40,7 +55,8 @@
           </div>
         </div>
 
-        <div class="music-bubble" data-music-player>
+        <div class="music-bubble aplayer-bubble" data-music-player>
+          <div id="qiyu-aplayer" data-qiyu-aplayer data-aplayer-config='<%- playerConfig %>'></div>
           <div class="music-disc" aria-hidden="true"></div>
           <div class="music-copy">
             <% tracks.forEach(function(track, index) { %>

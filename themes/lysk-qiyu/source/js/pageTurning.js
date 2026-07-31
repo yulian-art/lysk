@@ -6,7 +6,8 @@
     scrollerSelector: '.page-kind-home .site-main',
     contentSelector: 'main#content',
     triggerSelector: '#scroll-trigger',
-    transitionDuration: 520
+    transitionDuration: 520,
+    videoStartTime: 1.65
   };
 
   var scroller = document.querySelector(config.scrollerSelector);
@@ -24,9 +25,18 @@
     var overlay = document.createElement('div');
     overlay.className = 'spa-transition-overlay';
     overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML = '<span class="spa-transition-spinner"></span><span class="spa-transition-label">正在驶入深海…</span>';
+    var preload = document.querySelector('link[rel="preload"][as="video"]');
+    var video = document.createElement('video');
+    video.className = 'spa-transition-video';
+    video.muted = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('autoplay', '');
+    video.preload = 'auto';
+    if (preload) video.src = preload.href;
+    overlay.appendChild(video);
     document.querySelector('.theme-shell').appendChild(overlay);
-    return overlay;
+    return { overlay: overlay, video: video };
   }
 
   function wait(ms) {
@@ -44,6 +54,22 @@
     window.setTimeout(function () { content.classList.remove('spa-content-entering'); }, config.transitionDuration);
   }
 
+  function playTransitionVideo(video) {
+    return new Promise(function (resolve) {
+      var started = false;
+      function start() {
+        if (started) return;
+        started = true;
+        try { video.currentTime = config.videoStartTime; } catch (error) { /* metadata pending */ }
+        var playback = video.play();
+        if (playback && typeof playback.catch === 'function') playback.catch(resolve);
+      }
+      video.addEventListener('ended', resolve, { once: true });
+      video.addEventListener('loadedmetadata', start, { once: true });
+      if (video.readyState >= 1) start();
+    });
+  }
+
   function fetchContent() {
     return fetch(config.targetUrl, { headers: { Accept: 'text/html' } }).then(function (response) {
       if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -59,13 +85,15 @@
   function loadArtical() {
     if (busy || loaded) return;
     busy = true;
-    var overlay = createOverlay();
+    var transition = createOverlay();
+    var overlay = transition.overlay;
     overlay.classList.add('is-visible');
     document.documentElement.classList.add('is-spa-transitioning');
-    Promise.all([transitionOut(), fetchContent()]).then(function (result) {
-      var next = result[1];
+    Promise.all([fetchContent(), playTransitionVideo(transition.video)]).then(function (result) {
+      var next = result[0];
       content.innerHTML = next.markup;
       if (next.title) document.title = next.title;
+      if (typeof window.initQiyuAPlayers === 'function') window.initQiyuAPlayers();
       window.history.pushState({ spaPage: 'artical' }, '', config.targetUrl);
       scroller.scrollTop = 0;
       loaded = true;

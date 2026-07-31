@@ -353,6 +353,47 @@
   cursor: pointer;
 }
 
+.aplayer-bubble {
+  display: block;
+  width: 90%;
+  padding: 10px;
+}
+
+.aplayer-bubble .music-disc,
+.aplayer-bubble .music-copy,
+.aplayer-bubble .music-actions {
+  display: none;
+}
+
+.aplayer-bubble .aplayer {
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.aplayer-bubble .aplayer .aplayer-info {
+  border-top: 0;
+}
+
+.aplayer-bubble .aplayer .aplayer-title,
+.aplayer-bubble .aplayer .aplayer-author,
+.aplayer-bubble .aplayer .aplayer-time {
+  color: #F0D5C0;
+}
+
+.aplayer-bubble .aplayer .aplayer-list {
+  border-top-color: rgba(240, 213, 192, 0.14);
+}
+
+.aplayer-bubble .aplayer .aplayer-list ol li {
+  border-top-color: rgba(240, 213, 192, 0.08);
+  color: rgba(240, 213, 192, 0.78);
+}
+
+.aplayer-bubble .aplayer .aplayer-list ol li.aplayer-list-light {
+  background: rgba(200, 80, 60, 0.18);
+}
+
 .deepsea-nav {
   display: flex;
   height: 6vh;

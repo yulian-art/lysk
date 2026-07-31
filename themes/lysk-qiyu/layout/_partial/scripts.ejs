@@ -1,7 +1,6 @@
 <% var music = theme.music || {}; %>
-<% if (music.enable && music.src) { %>
-  <audio id="qiyu-background-music" src="<%- url_for(music.src) %>" <%- music.autoplay ? 'autoplay' : '' %> <%- music.loop !== false ? 'loop' : '' %> preload="auto"></audio>
-<% } %>
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<%- js('js/aplayer-init.js') %>
 <%- js('js/core/utils.js') %>
 <%- js('js/core/config.js') %>
 <%- js('js/effects/cursor.js') %>
