@@ -1,6 +1,8 @@
 <%
   function heatClass(index, offset) {
-    return 'heat-cell heat-level-' + ((index * 7 + offset) % 5);
+    var levels = ['bg-[#D5C8B8]', 'bg-[#B8AA99]', 'bg-[#8E7E6A]', 'bg-[#6A5A4A]', 'bg-[#3A2A1A]'];
+    var level = (index * 7 + offset) % 5;
+    return 'heat-cell heat-level-' + level + ' aspect-square rounded-[3px] ' + levels[level];
   }
 
   var assets = theme.assets || {};
@@ -12,39 +14,39 @@
 %>
 
 <% if (isAbout) { %>
-  <section class="ancient-about" style="--ancient-day: url('<%- url_for(ancientDay) %>'); --ancient-night: url('<%- url_for(ancientNight) %>');" aria-label="古风主题关于页面">
-    <aside class="ancient-profile">
-      <img src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '头像' %>">
-      <h1><%- theme.author || config.author || 'julien' %></h1>
-      <p>浪漫纯爱的利莫里亚小海神 · 冷酷柔情潜行者 · 临空市艺术家</p>
-      <blockquote>他是浪漫纯爱的利莫里亚小海神，是冷酷柔情潜行者，更是临空市才华横溢的大艺术家。</blockquote>
+  <section class="ancient-about grid min-h-screen w-full grid-cols-[35%_minmax(0,1fr)] gap-7 bg-[image:linear-gradient(90deg,rgba(245,237,227,0.88),rgba(245,237,227,0.76)),var(--ancient-day)] bg-cover bg-center px-[4vw] pb-12 pt-[calc(var(--header-height)+34px)] text-[#4A3A2A] max-[900px]:grid-cols-1 max-[900px]:px-[18px] max-[900px]:pb-14 max-[900px]:pt-[calc(var(--header-height)+20px)]" style="--ancient-day: url('<%- url_for(ancientDay) %>'); --ancient-night: url('<%- url_for(ancientNight) %>');" aria-label="古风主题关于页面">
+    <aside class="ancient-profile self-start text-center">
+      <img class="size-[14vh] rounded-full border-2 border-[#8A7A6A] object-cover shadow-[0_16px_34px_rgba(74,58,42,0.22)]" src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '头像' %>">
+      <h1 class="mb-2 mt-[18px] text-[1.8rem] text-[#4A3A2A]"><%- theme.author || config.author || 'julien' %></h1>
+      <p class="text-[0.9rem] italic leading-[1.8] text-[#8A7A6A]">浪漫纯爱的利莫里亚小海神 · 冷酷柔情潜行者 · 临空市艺术家</p>
+      <blockquote class="mb-0 mt-[18px] text-[0.9rem] italic leading-[1.8] text-[#8A7A6A]">他是浪漫纯爱的利莫里亚小海神，是冷酷柔情潜行者，更是临空市才华横溢的大艺术家。</blockquote>
     </aside>
 
-    <section class="ancient-records" aria-label="访问与提交记录">
-      <section class="ink-panel ancient-github">
-        <header>
-          <p class="eyebrow">GitHub</p>
-          <h2>提交记录</h2>
+    <section class="ancient-records grid min-w-0 gap-4" aria-label="访问与提交记录">
+      <section class="ink-panel ancient-github rounded-lg border border-[rgba(138,122,106,0.22)] bg-[rgba(245,237,227,0.74)] p-[18px] shadow-[0_18px_40px_rgba(74,58,42,0.14)] backdrop-blur-[10px]">
+        <header class="mb-[14px] flex items-baseline justify-between gap-3">
+          <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">GitHub</p>
+          <h2 class="m-0 text-[1.08rem] text-[#4A3A2A]">提交记录</h2>
         </header>
-        <div class="github-stats">
-          <p class="gh-typing">
+        <div class="github-stats text-center [&_p]:my-3 [&_img]:inline-block [&_img]:h-auto [&_img]:max-w-full [&_img]:align-middle">
+          <p class="gh-typing my-3">
             <img src="https://readme-typing-svg.demolab.com?font=Noto+Serif+SC&weight=600&size=32&duration=3000&pause=1000&color=C05040&background=F5EDE300&center=true&vCenter=true&width=500&lines=hello+world" alt="Typing SVG">
           </p>
 
-          <h3 class="gh-heading">About Me</h3>
+          <h3 class="gh-heading mb-[14px] mt-1.5 text-[1.3rem] font-bold text-[#4A3A2A]">About Me</h3>
 
-          <p class="gh-badges">
+          <p class="gh-badges my-3 [&_img]:mx-[3px]">
             <img src="https://img.shields.io/badge/%F0%9F%93%8D-wuwei-F5EDE3?style=flat-square&labelColor=C05040&color=6A5A4A" alt="location">
             <img src="https://img.shields.io/badge/UTC-%2B8-F5EDE3?style=flat-square&labelColor=C05040&color=6A5A4A" alt="utc">
             <a href="https://www.julien.net.cn"><img src="https://img.shields.io/badge/blog-julien-F5EDE3?style=flat-square&logo=hashnode&logoColor=white&labelColor=C05040&color=6A5A4A" alt="blog"></a>
             <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white&labelColor=4A3A2A&color=C05040" alt="go">
           </p>
 
-          <p class="gh-tagline"><em>vegetable chicken</em></p>
-          <p class="gh-note">防止自己摆烂决定放以下图来鞭尸</p>
-          <p class="gh-note">菜就多练</p>
+          <p class="gh-tagline my-3 text-[1.05rem] font-semibold text-[#C05040]"><em>vegetable chicken</em></p>
+          <p class="gh-note my-3 text-[0.9rem] text-[#6A5A4A]">防止自己摆烂决定放以下图来鞭尸</p>
+          <p class="gh-note my-3 text-[0.9rem] text-[#6A5A4A]">菜就多练</p>
 
-          <p class="gh-quote">
+          <p class="gh-quote mx-auto my-4 inline-block rounded-[26px] border border-[rgba(192,80,64,0.22)] bg-[rgba(192,80,64,0.08)] px-[1.8rem] py-[0.85rem] text-[1.05rem] italic leading-[1.7] text-[#6A4A3A]">
             “Water flows not for the first place,<br>but for the endless torrent.”
           </p>
 
@@ -52,7 +54,7 @@
             <img src="https://streak-stats.demolab.com/?user=yulian-art&hide_border=true&background=F5EDE300&stroke=C05040&ring=C05040&fire=C05040&currStreakNum=4A3A2A&currStreakLabel=C05040&sideNums=4A3A2A&sideLabels=6A5A4A&dates=8A7A6A" alt="streak">
           </p>
 
-          <p class="gh-cards">
+          <p class="gh-cards my-3 [&_img]:mx-1 [&_img]:my-1.5">
             <img height="170" src="https://grs-stats.vercel.app/api?username=yulian-art&show_icons=true&hide_border=true&bg_color=F5EDE300&title_color=C05040&icon_color=C05040&text_color=6A5A4A&include_all_commits=true&count_private=true" alt="stats">
             <img height="170" src="https://grs-stats.vercel.app/api/top-langs/?username=yulian-art&layout=compact&hide_border=true&bg_color=F5EDE300&title_color=C05040&text_color=6A5A4A&langs_count=10" alt="top-langs">
           </p>
@@ -63,31 +65,31 @@
         </div>
       </section>
 
-      <section class="ink-panel">
-        <header>
-          <p class="eyebrow">Blog</p>
-          <h2>博客记录</h2>
+      <section class="ink-panel rounded-lg border border-[rgba(138,122,106,0.22)] bg-[rgba(245,237,227,0.74)] p-[18px] shadow-[0_18px_40px_rgba(74,58,42,0.14)] backdrop-blur-[10px]">
+        <header class="mb-[14px] flex items-baseline justify-between gap-3">
+          <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Blog</p>
+          <h2 class="m-0 text-[1.08rem] text-[#4A3A2A]">博客记录</h2>
         </header>
-        <div class="ink-heatmap" aria-hidden="true">
+        <div class="ink-heatmap grid grid-cols-14 gap-1.5 max-[900px]:grid-cols-12" aria-hidden="true">
           <% for (var j = 0; j < 84; j++) { %>
             <span class="<%- heatClass(j, 4) %>"></span>
           <% } %>
         </div>
       </section>
 
-      <section class="ink-panel ancient-visits" id="busuanzi_container_site_pv" style="display:none;">
-        <header>
-          <p class="eyebrow">Tide Count</p>
-          <h2>访问量统计</h2>
+      <section class="ink-panel ancient-visits hidden rounded-lg border border-[rgba(138,122,106,0.22)] bg-[rgba(245,237,227,0.74)] p-[18px] shadow-[0_18px_40px_rgba(74,58,42,0.14)] backdrop-blur-[10px]" id="busuanzi_container_site_pv">
+        <header class="mb-[14px] flex items-baseline justify-between gap-3">
+          <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Tide Count</p>
+          <h2 class="m-0 text-[1.08rem] text-[#4A3A2A]">访问量统计</h2>
         </header>
-        <div class="visit-number"><span id="busuanzi_value_site_pv">--</span></div>
+        <div class="visit-number text-[2rem] font-bold text-[#6A4A3A]"><span id="busuanzi_value_site_pv">--</span></div>
         <p>次潮汐涌入这片海 · 独立访客 <span id="busuanzi_value_site_uv">--</span> 位。</p>
-        <p class="visit-sub" id="busuanzi_container_page_pv" style="display:none;">本页被翻阅 <span id="busuanzi_value_page_pv">--</span> 次。</p>
+        <p class="visit-sub mt-1.5 hidden text-[0.85rem] text-[#8A7A6A]" id="busuanzi_container_page_pv">本页被翻阅 <span id="busuanzi_value_page_pv">--</span> 次。</p>
       </section>
 
       <% if (page.content) { %>
-        <section class="ink-panel ancient-page-content">
-          <div class="article-content">
+        <section class="ink-panel ancient-page-content rounded-lg border border-[rgba(138,122,106,0.22)] bg-[rgba(245,237,227,0.74)] p-[18px] shadow-[0_18px_40px_rgba(74,58,42,0.14)] backdrop-blur-[10px]">
+          <div class="article-content text-[17px] leading-[1.95] text-[#4A3A2A] max-[767px]:text-[15px] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_h1]:mb-[0.72em] [&_h1]:mt-[2.1em] [&_h1]:leading-[1.32] [&_h1]:text-pearl [&_h2]:mb-[0.72em] [&_h2]:mt-[2.1em] [&_h2]:border-l-[3px] [&_h2]:border-pink [&_h2]:pl-3 [&_h2]:leading-[1.32] [&_h2]:text-pearl [&_h3]:mb-[0.72em] [&_h3]:mt-[2.1em] [&_h3]:leading-[1.32] [&_h3]:text-pearl [&_p]:my-[1.05em] [&_a]:border-b [&_a]:border-aqua/40 [&_a]:text-[#9ee7e2]">
             <%- page.content %>
           </div>
         </section>
@@ -95,12 +97,12 @@
     </section>
   </section>
 <% } else { %>
-  <article class="glass-card content-card page-card">
-    <header class="article-header">
-      <p class="eyebrow">Moonlit Page</p>
-      <h1><%- page.title || '独立页面' %></h1>
+  <article class="glass-card content-card page-card w-[min(920px,100%)] rounded-[32px] border border-[var(--glass-border)] bg-[linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05)),var(--glass-bg)] p-[clamp(26px,4.6vw,56px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-34px_86px_rgba(8,16,31,0.22),0_32px_90px_rgba(2,8,18,0.48)] backdrop-blur-[var(--glass-blur)] backdrop-saturate-[1.5] max-[767px]:rounded-[28px] max-[767px]:p-6">
+    <header class="article-header mb-7 border-b border-white/15 pb-[22px]">
+      <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Moonlit Page</p>
+      <h1 class="m-0 text-[clamp(30px,5vw,50px)] font-bold leading-[1.18] text-pearl [text-shadow:0_0_26px_rgba(255,183,197,0.34)]"><%- page.title || '独立页面' %></h1>
     </header>
-    <div class="article-content">
+    <div class="article-content text-[17px] leading-[1.95] text-pearl/90 max-[767px]:text-[15px] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_h1]:mb-[0.72em] [&_h1]:mt-[2.1em] [&_h1]:leading-[1.32] [&_h1]:text-pearl [&_h2]:mb-[0.72em] [&_h2]:mt-[2.1em] [&_h2]:border-l-[3px] [&_h2]:border-pink [&_h2]:pl-3 [&_h2]:leading-[1.32] [&_h2]:text-pearl [&_h3]:mb-[0.72em] [&_h3]:mt-[2.1em] [&_h3]:leading-[1.32] [&_h3]:text-pearl [&_p]:my-[1.05em] [&_a]:border-b [&_a]:border-aqua/40 [&_a]:text-[#9ee7e2]">
       <%- page.content %>
     </div>
   </article>

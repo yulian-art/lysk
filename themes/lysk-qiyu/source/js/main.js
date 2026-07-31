@@ -392,6 +392,9 @@
       link.href = '#' + heading.id;
       link.textContent = heading.textContent || ('章节 ' + (index + 1));
       link.setAttribute('data-level', heading.tagName.slice(1));
+      link.className = heading.tagName === 'H3'
+        ? 'pl-[14px] text-[0.92rem] text-[rgba(61,44,40,0.68)]'
+        : 'text-[0.92rem] text-[#3D2C28]';
       toc.appendChild(link);
     });
   }
@@ -464,7 +467,7 @@
 
   function createRipple(x, y) {
     var ripple = document.createElement('span');
-    ripple.className = 'qiyu-ripple';
+    ripple.className = 'qiyu-ripple pointer-events-none fixed z-[3] size-[14px] -translate-x-1/2 -translate-y-1/2 animate-ripple rounded-full border border-pearl/80 shadow-[0_0_18px_rgba(255,183,197,0.66)] motion-reduce:animate-none';
     ripple.style.left = x + 'px';
     ripple.style.top = y + 'px';
     shell.appendChild(ripple);

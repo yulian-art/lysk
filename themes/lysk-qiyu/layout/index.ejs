@@ -73,26 +73,26 @@
   var rotateImage = pick(assets.rotate_deepsea, 'images/deepsea/rotate.png');
 %>
 
-<section class="home-scroll qiyu-home" aria-label="祁煜主题首页">
-  <section class="opening-view snap-panel" aria-label="深海开屏" data-opening-screen>
-    <article class="opening-glass" data-opening-card>
-      <span class="opening-water" aria-hidden="true"></span>
-      <div class="opening-avatar">
-        <img src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '祁煜' %>">
+<section class="home-scroll qiyu-home min-h-[200vh]" aria-label="祁煜主题首页">
+  <section class="opening-view snap-panel relative grid min-h-screen w-full snap-start snap-always place-items-center overflow-hidden px-6 pb-[72px] pt-[calc(var(--header-height)+58px)] before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(180deg,rgba(4,10,24,0.08),rgba(4,10,24,0.42)_78%)] before:content-[''] [.is-opening-transition_&]:animate-opening-fade motion-reduce:animate-none" aria-label="深海开屏" data-opening-screen>
+    <article class="opening-glass relative z-[1] w-[min(760px,calc(100vw-48px))] overflow-hidden rounded-[32px] border border-white/20 bg-[linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.04)),rgba(8,18,35,0.46)] p-12 text-center text-pearl shadow-[0_34px_90px_rgba(0,20,60,0.4),inset_0_1px_0_rgba(255,255,255,0.22)] backdrop-blur-[18px] backdrop-saturate-[1.42] after:pointer-events-none after:absolute after:inset-0 after:z-[3] after:bg-[linear-gradient(180deg,transparent,rgba(3,20,42,0.36))] after:opacity-0 after:content-[''] [.is-opening-transition_&]:after:animate-glass-dissolve max-[900px]:p-7 motion-reduce:after:animate-none" data-opening-card>
+      <span class="opening-water pointer-events-none absolute inset-0 z-[2] translate-y-full bg-[linear-gradient(180deg,rgba(24,122,178,0.08),rgba(13,66,112,0.78)_42%,rgba(4,28,62,0.94))] [.is-opening-transition_&]:animate-water-rise motion-reduce:animate-none" aria-hidden="true"></span>
+      <div class="opening-avatar relative z-[4] mx-auto mb-6 grid size-[142px] place-items-center rounded-full border border-white/30 bg-white/5 shadow-[0_0_46px_rgba(200,80,60,0.28)] [.is-opening-transition_&]:animate-avatar-dissolve motion-reduce:animate-none">
+        <img class="size-[calc(100%-12px)] rounded-full border-[3px] border-pearl/70 object-cover" src="<%- url_for(avatar) %>" alt="<%- theme.author || config.author || '祁煜' %>">
       </div>
-      <p class="eyebrow">Love and Deepspace</p>
-      <h1><%- theme.title || config.title || '恋与深空 · 祁煜' %></h1>
-      <p class="subtitle"><%- theme.subtitle || config.subtitle || '晨昏火焰与深海潮汐之间' %></p>
-      <p class="opening-copy"><%- hero.quote || '我诞生于晨昏交替时的火焰，是利莫里亚的最后一任海神。' %></p>
-      <div class="hero-tags" aria-label="主题标签">
+      <p class="eyebrow relative z-[4] mb-2 text-[13px] font-bold uppercase text-gold">Love and Deepspace</p>
+      <h1 class="relative z-[4] m-0 text-[4.2rem] font-bold leading-[1.14] text-pearl [text-shadow:0_0_26px_rgba(200,80,60,0.32)] max-[900px]:text-[2.5rem]"><%- theme.title || config.title || '恋与深空 · 祁煜' %></h1>
+      <p class="subtitle relative z-[4] mx-auto mb-0 mt-[14px] text-[clamp(17px,2.7vw,24px)] text-pearl/90"><%- theme.subtitle || config.subtitle || '晨昏火焰与深海潮汐之间' %></p>
+      <p class="opening-copy relative z-[4] mx-auto mb-0 mt-[22px] max-w-[590px] text-base leading-[1.85] text-[rgba(232,243,255,0.82)]"><%- hero.quote || '我诞生于晨昏交替时的火焰，是利莫里亚的最后一任海神。' %></p>
+      <div class="hero-tags relative z-[4] mt-7 flex flex-wrap justify-center gap-[10px] [&_span]:rounded-full [&_span]:border [&_span]:border-pink/35 [&_span]:bg-pink/10 [&_span]:px-[13px] [&_span]:py-[7px] [&_span]:text-sm [&_span]:text-pearl/85 [&_span]:shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" aria-label="主题标签">
         <% heroTags.forEach(function(tag) { %>
           <span><%- tag %></span>
         <% }) %>
       </div>
     </article>
-    <p class="interaction-hint">向下滑动 · 潮汐展开</p>
+    <p class="interaction-hint absolute bottom-[54px] left-1/2 z-[2] m-0 -translate-x-1/2 animate-hint-breathe whitespace-nowrap text-sm text-pearl/80 [text-shadow:0_0_18px_rgba(255,183,197,0.52)] max-[767px]:bottom-8 motion-reduce:animate-none">向下滑动 · 潮汐展开</p>
   </section>
 
     <!-- 触发器：用于检测滚动到底部 -->
-  <div id="scroll-trigger" style="height: 1px; width: 100%;"></div>
+  <div id="scroll-trigger" class="h-px w-full"></div>
 </section>

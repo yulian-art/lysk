@@ -1,4 +1,4 @@
-<section class="deepsea-view snap-panel" id="articles" aria-label="深海内容主页">
+<section class="deepsea-view snap-panel relative h-screen min-h-screen w-full snap-start snap-always overflow-hidden bg-[linear-gradient(180deg,#0B1A30_0%,#0D2847_30%,#0A1F3A_70%,#061A2E_100%)] text-qiyu-pearl" id="articles" aria-label="深海内容主页">
 <%
   function toArray(value) {
     if (!value) return [];
@@ -40,72 +40,72 @@
   var navItems = [{ name: 'Articles', path: '/' }, { name: 'Tags', path: '/tags/' }, { name: 'About', path: '/about/' }, { name: 'Archives', path: '/archives/' }];
   var rotateImage = pick(assets.rotate_deepsea, 'images/deepsea/rotate.png');
 %>
-    <div class="deepsea-layout">
-      <aside class="deepsea-left" aria-label="壁纸与音乐">
-        <div class="wallpaper-bubble" data-wallpaper-carousel>
-          <div class="wallpaper-track" data-carousel-track>
+    <div class="deepsea-layout flex h-full min-h-0 w-full gap-6 px-7 pb-7 pt-[calc(var(--header-height)+26px)] max-[900px]:flex-col max-[900px]:gap-3 max-[900px]:px-[14px] max-[900px]:pb-[18px] max-[900px]:pt-[calc(var(--header-height)+18px)]">
+      <aside class="deepsea-left flex min-h-0 min-w-[260px] basis-[30%] flex-col items-center justify-center gap-[18px] max-[900px]:min-w-0 max-[900px]:basis-auto max-[900px]:gap-3" aria-label="壁纸与音乐">
+        <div class="wallpaper-bubble relative h-[50vh] w-[90%] overflow-hidden rounded-[20px] border border-white/10 bg-white/5 p-1.5 shadow-[0_8px_32px_rgba(0,20,60,0.4)] backdrop-blur-[14px] backdrop-saturate-[1.3] max-[900px]:h-[30vh] max-[900px]:w-full" data-wallpaper-carousel>
+          <div class="wallpaper-track flex h-full w-full overflow-hidden rounded-[14px] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] will-change-transform [.is-sliding_&]:animate-wallpaper-pop motion-reduce:animate-none" data-carousel-track>
             <% carouselImages.forEach(function(image, index) { %>
-              <div class="wallpaper-slide" style="background-image: url('<%- url_for(image) %>');" role="img" aria-label="深海壁纸 <%- index + 1 %>"></div>
+              <div class="wallpaper-slide h-full min-w-0 basis-full shrink-0 bg-cover bg-center" style="background-image: url('<%- url_for(image) %>');" role="img" aria-label="深海壁纸 <%- index + 1 %>"></div>
             <% }) %>
           </div>
-          <div class="wallpaper-dots" aria-label="壁纸轮播指示器">
+          <div class="wallpaper-dots absolute bottom-[18px] left-1/2 z-[2] flex -translate-x-1/2 gap-[9px]" aria-label="壁纸轮播指示器">
             <% carouselImages.forEach(function(image, index) { %>
-              <button class="wallpaper-dot<%- index === 0 ? ' is-active' : '' %>" type="button" data-slide-index="<%- index %>" aria-label="切换到第 <%- index + 1 %> 张壁纸"></button>
+              <button class="wallpaper-dot<%- index === 0 ? ' is-active' : '' %> size-[9px] cursor-pointer rounded-full border border-qiyu-pearl/65 bg-qiyu-pearl/30 p-0 hover:bg-coral hover:shadow-[0_0_14px_rgba(200,80,60,0.58)] [&.is-active]:bg-coral [&.is-active]:shadow-[0_0_14px_rgba(200,80,60,0.58)]" type="button" data-slide-index="<%- index %>" aria-label="切换到第 <%- index + 1 %> 张壁纸"></button>
             <% }) %>
           </div>
         </div>
 
-        <div class="music-bubble aplayer-bubble" data-music-player>
+        <div class="music-bubble aplayer-bubble block min-h-[12vh] w-[90%] rounded-2xl border border-white/10 bg-white/5 p-[10px] shadow-[0_8px_32px_rgba(0,20,60,0.4)] backdrop-blur-[14px] backdrop-saturate-[1.3] [.is-popping]:animate-music-pop [&_.aplayer]:m-0! [&_.aplayer]:bg-transparent! [&_.aplayer]:shadow-none! [&_.aplayer_.aplayer-info]:border-t-0! [&_.aplayer_.aplayer-title]:text-qiyu-pearl! [&_.aplayer_.aplayer-author]:text-qiyu-pearl! [&_.aplayer_.aplayer-time]:text-qiyu-pearl! [&_.aplayer_.aplayer-list]:border-t-qiyu-pearl/15! [&_.aplayer_.aplayer-list_ol_li]:border-t-qiyu-pearl/10! [&_.aplayer_.aplayer-list_ol_li]:text-qiyu-pearl/80! [&_.aplayer_.aplayer-list_ol_li.aplayer-list-light]:bg-coral/20! max-[900px]:min-h-24 max-[900px]:w-full motion-reduce:animate-none" data-music-player>
           <div id="qiyu-aplayer" data-qiyu-aplayer data-aplayer-config='<%- playerConfig %>'></div>
-          <div class="music-disc" aria-hidden="true"></div>
-          <div class="music-copy">
+          <div class="music-disc hidden" aria-hidden="true"></div>
+          <div class="music-copy hidden">
             <% tracks.forEach(function(track, index) { %>
-              <p class="music-track<%- index === 0 ? ' is-current' : '' %>" data-track-index="<%- index %>">
-                <span class="music-title"><%- trackTitle(track) %></span>
-                <span class="music-artist"><%- trackArtist(track) %></span>
+              <p class="music-track<%- index === 0 ? ' is-current' : '' %> m-0 hidden gap-1 [&.is-current]:grid" data-track-index="<%- index %>">
+                <span class="music-title overflow-hidden text-ellipsis whitespace-nowrap text-base font-bold text-[#E8D5C8] [text-shadow:0_0_8px_rgba(200,80,60,0.2)]"><%- trackTitle(track) %></span>
+                <span class="music-artist text-[0.82rem] text-qiyu-pearl/70"><%- trackArtist(track) %></span>
               </p>
             <% }) %>
           </div>
-          <div class="music-actions" aria-label="音乐切换">
+          <div class="music-actions hidden" aria-label="音乐切换">
             <button type="button" data-music-prev aria-label="上一首">上一首</button>
             <button type="button" data-music-next aria-label="下一首">下一首</button>
           </div>
         </div>
       </aside>
 
-      <section class="deepsea-right" aria-label="文章列表">
-        <nav class="deepsea-nav" aria-label="深海导航">
+      <section class="deepsea-right flex min-h-0 min-w-0 flex-1 basis-[70%] flex-col" aria-label="文章列表">
+        <nav class="deepsea-nav flex h-[6vh] min-h-[46px] items-center gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-[900px]:min-h-[42px]" aria-label="深海导航">
           <% navItems.forEach(function(item) { %>
-            <a href="<%- url_for(item.path) %>"><%- item.name %></a>
+            <a class="inline-flex min-h-[38px] shrink-0 items-center justify-center rounded-full border border-coral/30 bg-coral/15 px-[18px] py-2 text-qiyu-pearl [text-shadow:0_0_12px_rgba(200,80,60,0.4)] transition-[transform,border-color,box-shadow] duration-200 hover:scale-105 hover:border-coral/60 hover:shadow-[0_0_18px_rgba(200,80,60,0.32)] focus-visible:scale-105 focus-visible:border-coral/60 focus-visible:shadow-[0_0_18px_rgba(200,80,60,0.32)] focus-visible:outline-none" href="<%- url_for(item.path) %>"><%- item.name %></a>
           <% }) %>
         </nav>
 
-        <div class="deepsea-grid-scroll">
+        <div class="deepsea-grid-scroll min-h-0 flex-1 overflow-y-auto pb-1 pl-0 pr-3 pt-[14px] [scrollbar-color:#C05040_rgba(255,255,255,0.05)]">
           <% if (recentPosts.length) { %>
-            <div class="deepsea-grid">
+            <div class="deepsea-grid grid auto-rows-[28vh] grid-cols-2 content-start gap-4 max-[900px]:auto-rows-[30vh] max-[900px]:grid-cols-1">
               <% recentPosts.forEach(function(post, index) {
                 var tags = normalizeArray(post.tags).map(tagName).slice(0, 2);
                 var cardImage = cardImages[index % cardImages.length];
               %>
-                <a class="deepsea-article-card" href="<%- url_for(post.path) %>" aria-label="<%- post.title || '未命名文章' %>">
-                  <span class="deepsea-card-cover" style="background-image: url('<%- url_for(cardImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
-                  <span class="deepsea-card-body">
-                    <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
-                    <strong><%- post.title || '未命名文章' %></strong>
+                <a class="deepsea-article-card flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-white/10 bg-white/3 shadow-[0_8px_32px_rgba(0,20,60,0.26)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1.5 hover:border-coral/35 hover:shadow-[0_16px_38px_rgba(0,20,60,0.38)] focus-visible:-translate-y-1.5 focus-visible:border-coral/35 focus-visible:shadow-[0_16px_38px_rgba(0,20,60,0.38)] focus-visible:outline-none" href="<%- url_for(post.path) %>" aria-label="<%- post.title || '未命名文章' %>">
+                  <span class="deepsea-card-cover min-h-0 basis-[60%] bg-cover bg-center" style="background-image: url('<%- url_for(cardImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
+                  <span class="deepsea-card-body grid min-h-0 flex-1 basis-[40%] content-center gap-1.5 px-[14px] py-3">
+                    <time class="text-[0.78rem] text-qiyu-pearl/65" datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+                    <strong class="overflow-hidden text-[1.08rem] leading-[1.28] text-[#E8D5C8] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [text-shadow:0_0_8px_rgba(200,80,60,0.2)]"><%- post.title || '未命名文章' %></strong>
                     <% if (tags.length) { %>
-                      <span class="deepsea-card-tags"><%- tags.map(function(tag) { return '#' + tag; }).join('  ') %></span>
+                      <span class="deepsea-card-tags text-[0.78rem] text-qiyu-pearl/65"><%- tags.map(function(tag) { return '#' + tag; }).join('  ') %></span>
                     <% } %>
                   </span>
                 </a>
               <% }) %>
             </div>
           <% } else { %>
-            <p class="deepsea-empty">这片海域还没有新的记录。</p>
+            <p class="deepsea-empty text-qiyu-pearl/70">这片海域还没有新的记录。</p>
           <% } %>
         </div>
       </section>
     </div>
-    <button class="theme-rotate-button deepsea-rotate" type="button" data-scroll-top aria-label="回到顶部">
-      <img src="<%- url_for(rotateImage) %>" alt="">
+    <button class="theme-rotate-button deepsea-rotate fixed bottom-7 right-7 z-10 grid size-14 cursor-pointer place-items-center rounded-full border-0 bg-coral p-0 shadow-[0_4px_20px_rgba(200,80,60,0.4)] transition-transform duration-[800ms] ease-out hover:rotate-[360deg] focus-visible:rotate-[360deg] focus-visible:outline-none max-[900px]:bottom-[18px] max-[900px]:right-[18px]" type="button" data-scroll-top aria-label="回到顶部">
+      <img class="size-full rounded-full object-cover" src="<%- url_for(rotateImage) %>" alt="">
     </button>
   </section>

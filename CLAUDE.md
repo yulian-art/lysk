@@ -43,9 +43,9 @@ All browser JS is an IIFE-based namespace on `window.QiyuTheme`, loaded in stric
 Effects respect `prefers-reduced-motion` and a low-power heuristic (`resolveLowPower`: ≤4 cores or viewport width <768px). Effect intensity is tuned in the theme `_config.yml` under `effects:` and reduced on reading (post) pages via `reading_density`. Code comments throughout the JS are in Chinese.
 
 ### CSS organization
-`themes/lysk-qiyu/source/css/` is split by concern: `settings/variables.css` (design tokens), `base/reset.css`, then `layout/`, `components/`, `content/`, `effects/`, and `responsive.css`. Page-type theming keys off the body classes emitted by `layout.ejs` (`page-kind-*`, `page-theme-*`, `page-slug-*`). 
+The theme uses Tailwind CSS v4 utilities directly in its EJS templates and browser-created nodes. `themes/lysk-qiyu/tailwind.css` is the directive-only compiler entry, `tailwind.config.js` holds the design tokens and custom keyframes, and `themes/lysk-qiyu/source/css/theme.css` is the generated production stylesheet loaded by `_partial/styles.ejs`. Page-type variants still key off the body classes emitted by `layout.ejs` (`page-kind-*`, `page-theme-*`, `page-slug-*`).
 
-**Tailwind note:** `tailwindcss` v4 is listed in `package.json` but is **not imported** by any CSS file or build step — the theme is entirely hand-written CSS. Tailwind utility classes will not work. Do not add Tailwind classes to markup.
+Run `npm run build:css` after changing template classes, Tailwind configuration, or utility strings in JavaScript. `npm run build` and `npm run server` do this automatically. Do not add hand-written selector blocks to the generated stylesheet.
 
 ## Design brief & working constraints
 `ai阅读.md` (root) is the authoritative design spec for the theme — it defines the four thematic pages (深海/deep-sea, 樱花/sakura, 古风/classical, 画家/painter), the coral-red palette (`#C85040` / `#C05040`), animation timings, and layout intent. Consult it before making visual/structural theme changes. 

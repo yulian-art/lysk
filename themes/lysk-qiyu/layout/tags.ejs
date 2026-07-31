@@ -27,22 +27,22 @@
     return String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hans-CN');
   });
 %>
-<section class="glass-card listing-card">
-  <header class="listing-header">
-    <p class="eyebrow">Companions</p>
-    <h1>随行</h1>
-    <p>把同行路上的光点收在一起。</p>
+<section class="glass-card listing-card w-[min(920px,100%)] rounded-[32px] border border-[var(--glass-border)] bg-[linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05)),var(--glass-bg)] p-[clamp(26px,4.6vw,56px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-34px_86px_rgba(8,16,31,0.22),0_32px_90px_rgba(2,8,18,0.48)] backdrop-blur-[var(--glass-blur)] backdrop-saturate-[1.5] max-[767px]:rounded-[28px] max-[767px]:p-6">
+  <header class="listing-header mb-7">
+    <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Companions</p>
+    <h1 class="m-0 text-[clamp(30px,5vw,50px)] font-bold leading-[1.18] text-pearl [text-shadow:0_0_26px_rgba(255,183,197,0.34)]">随行</h1>
+    <p class="mb-0 mt-3 text-[rgba(232,243,255,0.62)]">把同行路上的光点收在一起。</p>
   </header>
   <% if (tags.length) { %>
-    <div class="term-grid">
+    <div class="term-grid grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
       <% tags.forEach(function(tag) { %>
-        <a class="term-button" href="<%- url_for(tag.path) %>">
-          <span class="term-name"># <%- tag.name %></span>
-          <span class="term-count"><%- termCount(tag) %> 篇</span>
+        <a class="term-button flex min-h-[58px] cursor-pointer items-center justify-between gap-3 rounded-[18px] border border-pink/25 bg-white/5 px-4 py-[14px] text-pearl/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-[border-color,background,transform] duration-200 hover:-translate-y-0.5 hover:border-pink/40 hover:bg-pink/10 focus-visible:-translate-y-0.5 focus-visible:border-pink/40 focus-visible:bg-pink/10 focus-visible:outline-none" href="<%- url_for(tag.path) %>">
+          <span class="term-name min-w-0 font-bold text-pearl"># <%- tag.name %></span>
+          <span class="term-count shrink-0 text-[13px] text-[rgba(232,243,255,0.62)]"><%- termCount(tag) %> 篇</span>
         </a>
       <% }) %>
     </div>
   <% } else { %>
-    <p class="empty-note">暂时还没有标签。</p>
+    <p class="empty-note m-0 text-sm text-[rgba(232,243,255,0.62)]">暂时还没有标签。</p>
   <% } %>
 </section>

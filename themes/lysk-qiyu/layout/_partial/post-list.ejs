@@ -22,21 +22,21 @@
 %>
 
 <% if (list.length) { %>
-  <div class="post-grid">
+  <div class="post-grid grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
     <% list.forEach(function(post) {
       var excerpt = String(post.excerpt || post.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     %>
       <article class="post-item">
-        <a href="<%- url_for(post.path) %>">
-          <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
-          <h2><%- post.title || '未命名文章' %></h2>
+        <a class="grid min-h-[178px] content-start gap-[10px] rounded-[22px] border border-white/10 bg-white/5 p-[18px] transition-[border-color,background,transform] duration-200 hover:-translate-y-[3px] hover:border-pink/40 hover:bg-pink/10 focus-visible:-translate-y-[3px] focus-visible:border-pink/40 focus-visible:bg-pink/10 focus-visible:outline-none" href="<%- url_for(post.path) %>">
+          <time class="text-[13px] text-[rgba(232,243,255,0.62)]" datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+          <h2 class="m-0 text-xl leading-[1.4] text-pearl"><%- post.title || '未命名文章' %></h2>
           <% if (excerpt) { %>
-            <p><%- excerpt.slice(0, 88) %><%- excerpt.length > 88 ? '...' : '' %></p>
+            <p class="m-0 text-sm text-[rgba(232,243,255,0.62)]"><%- excerpt.slice(0, 88) %><%- excerpt.length > 88 ? '...' : '' %></p>
           <% } %>
         </a>
       </article>
     <% }) %>
   </div>
 <% } else { %>
-  <p class="empty-note"><%- emptyCopy %></p>
+  <p class="empty-note m-0 text-sm text-[rgba(232,243,255,0.62)]"><%- emptyCopy %></p>
 <% } %>

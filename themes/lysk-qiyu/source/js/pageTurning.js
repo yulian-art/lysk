@@ -23,11 +23,11 @@
 
   function createOverlay() {
     var overlay = document.createElement('div');
-    overlay.className = 'spa-transition-overlay';
+    overlay.className = 'spa-transition-overlay pointer-events-none fixed inset-0 z-[80] block overflow-hidden bg-[#061A2E] opacity-0 transition-opacity duration-[320ms] ease-[ease] [&.is-visible]:opacity-100';
     overlay.setAttribute('aria-hidden', 'true');
     var preload = document.querySelector('link[rel="preload"][as="video"]');
     var video = document.createElement('video');
-    video.className = 'spa-transition-video';
+    video.className = 'spa-transition-video block size-full bg-[#061A2E] object-cover';
     video.muted = true;
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');

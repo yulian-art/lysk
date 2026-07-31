@@ -51,23 +51,23 @@
   var effectJson = JSON.stringify(effectConfig).replace(/'/g, '&#39;');
 %>
 <!DOCTYPE html>
-<html lang="<%- config.language || 'zh-CN' %>">
+<html class="min-h-full bg-deep-blue motion-reduce:scroll-auto" lang="<%- config.language || 'zh-CN' %>">
 <head>
   <link rel="preload" as="video" href="<%- url_for('video/7月31日-1.mp4') %>" type="video/mp4">
   <%- partial('_partial/head') %>
   <%- partial('_partial/styles') %>
 </head>
-<body class="qiyu-theme page-kind-<%- pageKind %> page-theme-<%- pageTheme %><%- pageSlugClass %>">
+<body class="qiyu-theme page-kind-<%- pageKind %> page-theme-<%- pageTheme %><%- pageSlugClass %> min-h-full overflow-x-hidden bg-deep-blue font-serif leading-[1.7] text-pearl selection:bg-pink/80 selection:text-[#25131c] [--header-height:74px] [cursor:var(--cursor-normal),auto] [&.is-text-cursor]:[cursor:var(--cursor-text),text] [&.has-qiyu-cursor]:cursor-none! [&.has-qiyu-cursor_*]:cursor-none! [&.page-kind-home]:overflow-hidden max-[767px]:[--header-height:68px] motion-reduce:[&_*]:animate-none! motion-reduce:[&_*]:scroll-auto! motion-reduce:[&_*]:transition-none! motion-reduce:[&_*::before]:animate-none! motion-reduce:[&_*::after]:animate-none!">
   <div
-    class="theme-shell"
+    class="theme-shell relative isolate min-h-screen overflow-x-hidden bg-deep-blue before:pointer-events-none before:fixed before:inset-0 before:z-0 before:scale-[1.02] before:bg-[linear-gradient(180deg,rgba(3,7,18,0.08),rgba(3,7,18,0.52)_72%,rgba(3,7,18,0.78)),var(--bg-image)] before:bg-cover before:bg-center before:content-[''] after:pointer-events-none after:fixed after:inset-0 after:z-[1] after:bg-[repeating-linear-gradient(115deg,rgba(120,214,208,0.07)_0_1px,transparent_1px_34px),linear-gradient(90deg,rgba(255,183,197,0.08),transparent_28%,rgba(212,165,116,0.06)_70%,transparent)] after:opacity-[0.58] after:mix-blend-screen after:content-['']"
     style="--bg-image: url('<%- url_for(background) %>'); --avatar-image: url('<%- url_for(avatar) %>'); --cursor-normal: url('<%- url_for(cursorNormal) %>'); --cursor-text: url('<%- url_for(cursorText) %>'); --glass-bg: <%- pick(glass.color, 'rgba(12, 22, 39, 0.54)') %>; --glass-alpha: <%- pick(glass.opacity, 0.74) %>; --glass-border: <%- pick(glass.border_color, 'rgba(255, 183, 197, 0.32)') %>; --glass-blur: <%- pick(glass.blur, 16) %>px;"
     data-effect-config='<%- effectJson %>'
   >
-    <canvas id="qiyu-ocean-canvas" aria-hidden="true"></canvas>
-    <div id="qiyu-fish-layer" class="qiyu-fish-layer" aria-hidden="true"></div>
-    <div class="ocean-vignette" aria-hidden="true"></div>
+    <canvas id="qiyu-ocean-canvas" class="pointer-events-none fixed inset-0 z-[2] h-screen w-screen" aria-hidden="true"></canvas>
+    <div id="qiyu-fish-layer" class="qiyu-fish-layer pointer-events-none fixed inset-0 z-[3] overflow-hidden [contain:layout_paint_style]" aria-hidden="true"></div>
+    <div class="ocean-vignette pointer-events-none fixed inset-0 z-[1] bg-[linear-gradient(90deg,rgba(1,5,14,0.58),transparent_24%,transparent_76%,rgba(1,5,14,0.48)),linear-gradient(0deg,rgba(2,8,18,0.72),transparent_38%,rgba(6,20,42,0.14))]" aria-hidden="true"></div>
     <%- partial('_partial/header') %>
-    <main class="site-main" id="content">
+    <main class="site-main relative z-[4] grid min-h-screen place-items-center px-[clamp(16px,4vw,64px)] pb-[92px] pt-[calc(var(--header-height)+70px)] max-[767px]:px-[14px] max-[767px]:pb-[94px] max-[767px]:pt-[calc(var(--header-height)+54px)] [.has-qiyu-cursor_&]:![cursor:var(--cursor-normal),auto] [.has-qiyu-cursor_&_*]:![cursor:var(--cursor-normal),auto] [.has-qiyu-cursor_&_a]:cursor-pointer! [.has-qiyu-cursor_&_button]:cursor-pointer! [.page-kind-home_&]:block [.page-kind-home_&]:h-screen [.page-kind-home_&]:min-h-screen [.page-kind-home_&]:overflow-x-hidden [.page-kind-home_&]:overflow-y-auto [.page-kind-home_&]:p-0 [.page-kind-home_&]:[overscroll-behavior-y:contain] [.page-kind-home_&]:scroll-smooth [.page-kind-home_&]:snap-y [.page-kind-home_&]:snap-mandatory [.page-kind-home_&]:[scroll-padding-top:calc(var(--header-height)+24px)] [.page-kind-home_&]:[scrollbar-color:#C05040_rgba(255,255,255,0.05)] [.page-kind-home_&]:[scrollbar-width:thin] [.page-kind-post_&]:items-start [.page-kind-page_&]:items-start [.page-kind-archive_&]:items-start [.page-kind-category_&]:items-start [.page-kind-tag_&]:items-start [.page-theme-post_&]:block [.page-theme-post_&]:p-0 [.page-theme-about_&]:block [.page-theme-about_&]:p-0 [.page-kind-archive_&]:block [.page-kind-archive_&]:p-0 max-[767px]:[.page-kind-home_&]:[scroll-padding-top:calc(var(--header-height)+16px)] [&::-webkit-scrollbar]:block [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coral-deep [&.spa-content-leaving]:pointer-events-none [&.spa-content-leaving]:animate-spa-leave [&.spa-content-entering]:animate-spa-enter motion-reduce:[&.spa-content-leaving]:animate-none motion-reduce:[&.spa-content-entering]:animate-none" id="content">
       <%- body %>
     </main>
     <%- partial('_partial/footer') %>

@@ -26,25 +26,25 @@
   var sakuraTitle = pick(music.sakura_title, '花间行');
 %>
 
-<div class="sakura-loading" data-sakura-loading style="--sakura-loading-image: url('<%- url_for(sakuraCover) %>');" aria-hidden="true">
-  <div class="sakura-loading-media"></div>
-  <div class="sakura-loading-glow"></div>
+<div class="sakura-loading fixed inset-0 z-[60] overflow-hidden bg-[#FDE8E0] opacity-100 visible transition-[opacity,visibility] duration-[420ms] ease-[ease] [&.is-hidden]:invisible [&.is-hidden]:opacity-0" data-sakura-loading style="--sakura-loading-image: url('<%- url_for(sakuraCover) %>');" aria-hidden="true">
+  <div class="sakura-loading-media absolute inset-0 scale-[1.02] bg-[image:var(--sakura-loading-image)] bg-cover bg-center"></div>
+  <div class="sakura-loading-glow absolute inset-0 bg-[rgba(255,200,200,0.10)]"></div>
 </div>
 
-<section class="sakura-reading" aria-label="樱花主题文章详情">
-  <aside class="sakura-sidebar" aria-label="文章侧栏">
-    <section class="sakura-panel sakura-outline-panel">
-      <p class="eyebrow">Outline</p>
-      <h2>目录</h2>
-      <nav class="sakura-toc" data-toc-target=".sakura-article-content" aria-label="文章目录">
-        <p class="sakura-toc-empty">章节会随文章生成。</p>
+<section class="sakura-reading grid min-h-screen w-full grid-cols-[minmax(230px,25%)_minmax(0,1fr)] gap-6 bg-[linear-gradient(180deg,#FFF5F0_0%,#FDE8E0_40%,#F5DDD5_100%)] px-[3vw] pb-12 pt-[calc(var(--header-height)+30px)] text-[#3D2C28] max-[900px]:grid-cols-1 max-[900px]:px-[14px] max-[900px]:pb-[76px] max-[900px]:pt-[calc(var(--header-height)+20px)]" aria-label="樱花主题文章详情">
+  <aside class="sakura-sidebar flex min-w-0 flex-col gap-4 max-[900px]:order-2" aria-label="文章侧栏">
+    <section class="sakura-panel sakura-outline-panel rounded-lg border border-[rgba(255,150,150,0.20)] bg-white/50 p-[18px] shadow-[0_14px_34px_rgba(138,90,74,0.10)] backdrop-blur-xl backdrop-saturate-[1.3]">
+      <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Outline</p>
+      <h2 class="mb-3 mt-0 text-[1.08rem] text-[#8A5A4A]">目录</h2>
+      <nav class="sakura-toc grid gap-2" data-toc-target=".sakura-article-content" aria-label="文章目录">
+        <p class="sakura-toc-empty text-[0.92rem] text-[#3D2C28]">章节会随文章生成。</p>
       </nav>
     </section>
 
-    <section class="sakura-panel sakura-tags-panel">
-      <p class="eyebrow">Petals</p>
-      <h2>标签云</h2>
-      <div class="sakura-tag-cloud">
+    <section class="sakura-panel sakura-tags-panel rounded-lg border border-[rgba(255,150,150,0.20)] bg-white/50 p-[18px] shadow-[0_14px_34px_rgba(138,90,74,0.10)] backdrop-blur-xl backdrop-saturate-[1.3]">
+      <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Petals</p>
+      <h2 class="mb-3 mt-0 text-[1.08rem] text-[#8A5A4A]">标签云</h2>
+      <div class="sakura-tag-cloud flex flex-wrap gap-[9px] [&_a]:rounded-full [&_a]:border [&_a]:border-[rgba(232,160,144,0.42)] [&_a]:bg-[rgba(232,160,144,0.18)] [&_a]:px-[11px] [&_a]:py-1.5 [&_a]:text-[0.86rem] [&_a]:text-[#8A5A4A] [&_a:hover]:bg-[#D48070] [&_a:hover]:text-white [&>span]:rounded-full [&>span]:border [&>span]:border-[rgba(232,160,144,0.42)] [&>span]:bg-[rgba(232,160,144,0.18)] [&>span]:px-[11px] [&>span]:py-1.5 [&>span]:text-[0.86rem] [&>span]:text-[#8A5A4A]">
         <% if (tags.length) { %>
           <% tags.forEach(function(tag) { %>
             <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
@@ -61,25 +61,25 @@
       </div>
     </section>
 
-    <section class="sakura-music-panel" aria-label="樱花主题音乐播放器">
-      <span class="sakura-music-disc" aria-hidden="true"></span>
-      <div>
-        <strong><%- sakuraTitle %></strong>
-        <span>恋与深空</span>
+    <section class="sakura-music-panel mt-auto grid grid-cols-[46px_minmax(0,1fr)] items-center gap-3 rounded-lg border border-[rgba(255,150,150,0.20)] bg-[rgba(255,240,235,0.7)] p-[14px] shadow-[0_14px_34px_rgba(138,90,74,0.10)] backdrop-blur-xl backdrop-saturate-[1.3]" aria-label="樱花主题音乐播放器">
+      <span class="sakura-music-disc size-[42px] rounded-full bg-[radial-gradient(circle_at_center,#FFF5F0_0_20%,#E8A090_21%_100%)] shadow-[0_0_16px_rgba(232,160,144,0.24)]" aria-hidden="true"></span>
+      <div class="min-w-0">
+        <strong class="block overflow-hidden text-ellipsis whitespace-nowrap text-[#8A5A4A]"><%- sakuraTitle %></strong>
+        <span class="block overflow-hidden text-ellipsis whitespace-nowrap text-[0.82rem] text-[rgba(61,44,40,0.62)]">恋与深空</span>
       </div>
     </section>
   </aside>
 
-  <section class="sakura-article-wrap">
-    <div class="sakura-cover" style="background-image: url('<%- url_for(sakuraCover) %>');" role="img" aria-label="樱花主题背景图">
-      <blockquote>浪漫主义的根源，在画里，更在画外。</blockquote>
+  <section class="sakura-article-wrap min-w-0 max-[900px]:order-1">
+    <div class="sakura-cover relative min-h-[32vh] overflow-hidden rounded-lg bg-cover bg-center shadow-[0_18px_40px_rgba(138,90,74,0.16)] after:absolute after:inset-0 after:bg-[linear-gradient(180deg,rgba(255,245,240,0.06),rgba(255,245,240,0.58))] after:content-['']" style="background-image: url('<%- url_for(sakuraCover) %>');" role="img" aria-label="樱花主题背景图">
+      <blockquote class="absolute bottom-5 left-6 z-[1] m-0 max-w-[560px] text-[1.2rem] italic text-[#8A5A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.46)]">浪漫主义的根源，在画里，更在画外。</blockquote>
     </div>
 
-    <article class="sakura-content-panel">
-      <header class="article-header">
-        <p class="eyebrow">Sakura Note</p>
-        <h1><%- page.title || '未命名文章' %></h1>
-        <div class="post-meta">
+    <article class="sakura-content-panel mt-[18px] rounded-lg border border-[rgba(255,150,150,0.20)] bg-white/50 p-7 shadow-[0_14px_34px_rgba(138,90,74,0.10)] backdrop-blur-xl backdrop-saturate-[1.3] max-[900px]:p-[18px]">
+      <header class="article-header mb-7 border-b border-[rgba(255,150,150,0.20)] pb-[22px]">
+        <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Sakura Note</p>
+        <h1 class="m-0 text-[clamp(30px,5vw,50px)] font-bold leading-[1.18] text-[#8A5A4A]"><%- page.title || '未命名文章' %></h1>
+        <div class="post-meta mt-[14px] flex flex-wrap items-center gap-2 text-[13px] text-[rgba(61,44,40,0.66)] [&_a]:text-[rgba(61,44,40,0.66)]">
           <time datetime="<%- date_xml(page.date) %>"><%- date(page.date, config.date_format || 'YYYY-MM-DD') %></time>
           <% if (categories.length) { %>
             <span>·</span>
@@ -90,27 +90,27 @@
         </div>
       </header>
 
-      <div class="article-content sakura-article-content">
+      <div class="article-content sakura-article-content text-[17px] leading-[1.95] text-[#3D2C28] max-[767px]:text-[15px] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_h1]:mb-[0.72em] [&_h1]:mt-[2.1em] [&_h1]:leading-[1.32] [&_h1]:text-[#8A5A4A] [&_h2]:mb-[0.72em] [&_h2]:mt-[2.1em] [&_h2]:border-l-[3px] [&_h2]:border-l-pink [&_h2]:pl-3 [&_h2]:leading-[1.32] [&_h2]:text-[#8A5A4A] [&_h3]:mb-[0.72em] [&_h3]:mt-[2.1em] [&_h3]:leading-[1.32] [&_h3]:text-[#8A5A4A] [&_h4]:mb-[0.72em] [&_h4]:mt-[2.1em] [&_h4]:leading-[1.32] [&_h4]:text-[#8A5A4A] [&_p]:my-[1.05em] [&_p]:[cursor:var(--cursor-text),text] [&_li]:[cursor:var(--cursor-text),text] [&_a]:border-b [&_a]:border-[rgba(182,95,85,0.34)] [&_a]:text-[#B65F55] [&_blockquote]:my-[1.5em] [&_blockquote]:rounded-r-[18px] [&_blockquote]:border-l-[3px] [&_blockquote]:border-l-gold [&_blockquote]:bg-white/50 [&_blockquote]:px-[18px] [&_blockquote]:py-[14px] [&_blockquote]:text-[rgba(61,44,40,0.76)] [&_blockquote]:[cursor:var(--cursor-text),text] [&_code]:rounded-lg [&_code]:border [&_code]:border-aqua/25 [&_code]:bg-[rgba(3,9,20,0.56)] [&_code]:px-[0.42em] [&_code]:py-[0.14em] [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-[#bbf5ef] [&_code]:[cursor:var(--cursor-text),text] [&_pre]:my-[1.6em] [&_pre]:overflow-x-auto [&_pre]:rounded-[20px] [&_pre]:border [&_pre]:border-aqua/20 [&_pre]:bg-[rgba(3,9,20,0.72)] [&_pre]:p-[18px] [&_pre]:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] [&_pre]:[cursor:var(--cursor-text),text] [&_pre_code]:border-0 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_th]:border [&_th]:border-white/10 [&_th]:bg-pink/10 [&_th]:px-3 [&_th]:py-[10px] [&_th]:text-pearl [&_td]:border [&_td]:border-white/10 [&_td]:px-3 [&_td]:py-[10px]">
         <%- page.content %>
       </div>
 
       <% if (tags.length) { %>
-        <footer class="article-tags" aria-label="文章标签">
+        <footer class="article-tags mt-[34px] flex flex-wrap justify-start gap-[10px] [&_a]:rounded-full [&_a]:border [&_a]:border-pink/35 [&_a]:bg-pink/10 [&_a]:px-[13px] [&_a]:py-[7px] [&_a]:text-sm [&_a]:text-pearl/85 [&_a]:shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" aria-label="文章标签">
           <% tags.forEach(function(tag) { %>
             <a href="<%- url_for(tag.path) %>"># <%- tag.name %></a>
           <% }) %>
         </footer>
       <% } %>
 
-      <nav class="post-pager" aria-label="文章导航">
+      <nav class="post-pager mt-9 grid grid-cols-2 gap-3 max-[767px]:grid-cols-1" aria-label="文章导航">
         <% if (page.prev) { %>
-          <a href="<%- url_for(page.prev.path) %>" class="pager-link prev">上一篇 · <%- page.prev.title || '未命名文章' %></a>
+          <a href="<%- url_for(page.prev.path) %>" class="pager-link prev min-w-0 rounded-[18px] border border-pink/25 bg-white/5 px-[15px] py-[13px] text-pearl/85">上一篇 · <%- page.prev.title || '未命名文章' %></a>
         <% } %>
         <% if (page.next) { %>
-          <a href="<%- url_for(page.next.path) %>" class="pager-link next">下一篇 · <%- page.next.title || '未命名文章' %></a>
+          <a href="<%- url_for(page.next.path) %>" class="pager-link next min-w-0 rounded-[18px] border border-pink/25 bg-white/5 px-[15px] py-[13px] text-right text-pearl/85 max-[767px]:text-left">下一篇 · <%- page.next.title || '未命名文章' %></a>
         <% } %>
       </nav>
     </article>
   </section>
-  <button class="theme-rotate-button sakura-rotate" type="button" data-scroll-top aria-label="回到顶部"></button>
+  <button class="theme-rotate-button sakura-rotate fixed bottom-7 right-7 z-10 grid size-14 cursor-pointer place-items-center rounded-full border-0 bg-[#E8A090] p-0 shadow-[0_4px_20px_rgba(232,160,144,0.42)] transition-transform duration-[800ms] ease-out before:size-[22px] before:rounded-full before:bg-[#FFF5F0] before:shadow-[0_0_0_8px_rgba(255,245,240,0.3)] before:content-[''] hover:rotate-[360deg] focus-visible:rotate-[360deg] focus-visible:outline-none max-[900px]:bottom-[18px] max-[900px]:right-[18px]" type="button" data-scroll-top aria-label="回到顶部"></button>
 </section>

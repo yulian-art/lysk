@@ -1,8 +1,8 @@
-<section class="glass-card listing-card">
-  <header class="listing-header">
-    <p class="eyebrow">Tag</p>
-    <h1># <%- page.tag || '标签' %></h1>
-    <p>被同一个光点标记的片段。</p>
+<section class="glass-card listing-card w-[min(920px,100%)] rounded-[32px] border border-[var(--glass-border)] bg-[linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05)),var(--glass-bg)] p-[clamp(26px,4.6vw,56px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-34px_86px_rgba(8,16,31,0.22),0_32px_90px_rgba(2,8,18,0.48)] backdrop-blur-[var(--glass-blur)] backdrop-saturate-[1.5] max-[767px]:rounded-[28px] max-[767px]:p-6">
+  <header class="listing-header mb-7">
+    <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Tag</p>
+    <h1 class="m-0 text-[clamp(30px,5vw,50px)] font-bold leading-[1.18] text-pearl [text-shadow:0_0_26px_rgba(255,183,197,0.34)]"># <%- page.tag || '标签' %></h1>
+    <p class="mb-0 mt-3 text-[rgba(232,243,255,0.62)]">被同一个光点标记的片段。</p>
   </header>
   <%- partial('_partial/post-list', { posts: page.posts, emptyText: '这个标签下暂时没有文章。' }) %>
 </section>

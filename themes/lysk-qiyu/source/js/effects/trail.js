@@ -32,7 +32,11 @@
     //创建 img 元素，预置类名、异步解码、禁止拖拽，初始透明度为 0（隐藏），避免闪动。
     function createTrailImage(src, className) {
       var image = document.createElement('img');
-      image.className = className;
+      var baseClasses = 'pointer-events-none absolute left-0 top-0 block max-w-none select-none origin-center will-change-[transform,opacity]';
+      var effectClasses = className === 'qiyu-trail-drop'
+        ? '[filter:drop-shadow(0_0_8px_rgba(255,247,251,0.32))]'
+        : '[filter:drop-shadow(0_0_10px_rgba(255,247,251,0.28))_drop-shadow(0_0_18px_rgba(120,214,208,0.16))]';
+      image.className = className + ' ' + baseClasses + ' ' + effectClasses;
       image.src = src;
       image.alt = '';
       image.decoding = 'async';

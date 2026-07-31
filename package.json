@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "hexo generate",
+    "build": "npm run build:css && hexo generate",
+    "build:css": "tailwindcss -i ./themes/lysk-qiyu/tailwind.css -o ./themes/lysk-qiyu/source/css/theme.css --minify",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "npm run build:css && hexo server",
+    "watch:css": "tailwindcss -i ./themes/lysk-qiyu/tailwind.css -o ./themes/lysk-qiyu/source/css/theme.css --watch"
   },
   "hexo": {
     "version": "8.1.2"
@@ -24,5 +26,8 @@
     "hexo-server": "^3.0.0",
     "hexo-theme-landscape": "^1.0.0",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3"
   }
 }

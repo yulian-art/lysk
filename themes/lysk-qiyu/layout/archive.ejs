@@ -31,32 +31,32 @@
   var painterNight = assets.painter_night || 'images/deepsea/painter-night.jpg';
 %>
 
-<section class="painter-archive" style="--painter-day: url('<%- url_for(painterDay) %>'); --painter-night: url('<%- url_for(painterNight) %>');" aria-label="画家主题归潮页面">
-  <header class="painter-header">
-    <p class="eyebrow">Return Tide</p>
-    <h1>归潮</h1>
-    <p>他的画作大多以海洋文明“利莫里亚”为主题，风格像烈火一样浪漫炽烈。</p>
+<section class="painter-archive relative min-h-screen w-full overflow-hidden bg-[image:linear-gradient(180deg,rgba(5,5,5,0.58),rgba(5,5,5,0.82)),var(--painter-night)] bg-cover bg-center px-[5vw] pb-20 pt-[calc(var(--header-height)+34px)] text-[#E8D5C0]" style="--painter-day: url('<%- url_for(painterDay) %>'); --painter-night: url('<%- url_for(painterNight) %>');" aria-label="画家主题归潮页面">
+  <header class="painter-header mx-auto mb-[34px] max-w-[760px] text-center">
+    <p class="eyebrow mb-2 text-[13px] font-bold uppercase text-gold">Return Tide</p>
+    <h1 class="m-0 text-[2.4rem] italic text-[#E8D5C0]">归潮</h1>
+    <p class="text-[rgba(232,213,192,0.72)]">他的画作大多以海洋文明“利莫里亚”为主题，风格像烈火一样浪漫炽烈。</p>
   </header>
 
   <% if (posts.length) { %>
-    <div class="paint-timeline">
+    <div class="paint-timeline relative mx-auto grid max-w-[1100px] gap-7 before:absolute before:bottom-0 before:left-1/2 before:top-0 before:w-0.5 before:-translate-x-1/2 before:bg-coral-deep before:content-[''] max-[900px]:before:left-4">
       <% posts.forEach(function(post, index) {
         var coverImage = coverImages[index % coverImages.length];
       %>
-        <article class="paint-entry" data-paint-frame>
-          <a class="paint-frame" href="<%- url_for(post.path) %>">
-            <span class="paint-cover" style="background-image: url('<%- url_for(coverImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
-            <span class="paint-copy">
-              <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
-              <strong><%- post.title || '未命名文章' %></strong>
+        <article class="paint-entry relative grid w-[calc(50%-40px)] odd:justify-self-start odd:text-right even:justify-self-end even:text-left before:absolute before:top-[38px] before:size-3 before:rounded-full before:bg-coral-deep before:shadow-[0_0_16px_rgba(200,80,60,0.4)] before:content-[''] odd:before:-right-[47px] even:before:-left-[47px] max-[900px]:w-[calc(100%-44px)] max-[900px]:justify-self-end max-[900px]:text-left max-[900px]:odd:justify-self-end max-[900px]:odd:text-left max-[900px]:before:-left-[34px] max-[900px]:before:right-auto" data-paint-frame>
+          <a class="paint-frame grid origin-center overflow-hidden rounded-lg border-2 border-[#5A4A3A] bg-[#3A2A1A] text-[#E8D5C0] shadow-[0_8px_40px_rgba(0,0,0,0.5)] [.is-shaking_&]:animate-frame-shake motion-reduce:animate-none" href="<%- url_for(post.path) %>">
+            <span class="paint-cover h-[24vh] min-h-[180px] bg-cover bg-center transition-transform duration-250 ease-in-out [.is-shaking_&]:scale-[1.02]" style="background-image: url('<%- url_for(coverImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
+            <span class="paint-copy grid gap-2 p-4">
+              <time class="text-[0.82rem] text-[rgba(232,213,192,0.64)]" datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+              <strong class="text-[1.6rem] italic leading-tight text-[#E8D5C0] max-[900px]:text-[1.2rem]"><%- post.title || '未命名文章' %></strong>
             </span>
           </a>
         </article>
       <% }) %>
     </div>
   <% } else { %>
-    <p class="painter-empty">还没有可归档的文章。</p>
+    <p class="painter-empty text-center text-[rgba(232,213,192,0.72)]">还没有可归档的文章。</p>
   <% } %>
 
-  <button class="theme-rotate-button painter-rotate" type="button" data-scroll-top aria-label="回到顶部"></button>
+  <button class="theme-rotate-button painter-rotate fixed bottom-7 right-7 z-10 grid size-14 cursor-pointer place-items-center rounded-full border-0 bg-coral p-0 shadow-[0_4px_20px_rgba(200,80,60,0.4)] transition-transform duration-[800ms] ease-out before:size-[22px] before:rounded-full before:bg-[#E8D5C0] before:content-[''] hover:rotate-[360deg] focus-visible:rotate-[360deg] focus-visible:outline-none max-[900px]:bottom-[18px] max-[900px]:right-[18px]" type="button" data-scroll-top aria-label="回到顶部"></button>
 </section>
