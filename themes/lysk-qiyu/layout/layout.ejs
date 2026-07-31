@@ -72,5 +72,9 @@
     <%- partial('_partial/footer') %>
   </div>
   <%- partial('_partial/scripts') %>
+    <% if (is_home()) { %>
+    <!-- 引入页面跳转脚本（外部文件方式） -->
+    <script src="<%- url_for('js/pageTurning.js') %>" defer></script>
+  <% } %>
 </body>
 </html>

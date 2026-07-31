@@ -1,0 +1,95 @@
+<section class="deepsea-view snap-panel" id="articles" aria-label="深海内容主页">
+<%
+  function toArray(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    if (typeof value.toArray === 'function') return value.toArray();
+    var result = [];
+    if (typeof value.each === 'function') value.each(function (item) { result.push(item); });
+    return result;
+  }
+  function pick(value, fallback) { return value === undefined || value === null || value === '' ? fallback : value; }
+  function tagName(tag) { return typeof tag === 'string' ? tag : (tag && (tag.name || tag.slug)) || String(tag); }
+  function normalizeArray(value) { return toArray(value); }
+  function trackTitle(track) { return typeof track === 'string' ? track : pick(track && track.title, 'Shen Yin'); }
+  function trackArtist(track) { return typeof track === 'string' ? 'Love and Deepspace' : pick(track && track.artist, 'Love and Deepspace'); }
+  var assets = theme.assets || {};
+  var music = theme.music || {};
+  var carouselImages = normalizeArray(theme.carousel_images || assets.carousel_images);
+  var cardImages = normalizeArray(assets.deepsea_cards || theme.deepsea_cards);
+  var tracks = normalizeArray(music.deepsea_tracks);
+  var recentPosts = toArray(site.posts && site.posts.sort ? site.posts.sort('-date') : site.posts).slice(0, 12);
+  if (!carouselImages.length) carouselImages = ['images/carousel/1.jpg', 'images/carousel/2.jpg'];
+  if (!cardImages.length) cardImages = ['images/deepsea/card-1.jpg', 'images/deepsea/card-2.jpg', 'images/deepsea/card-3.jpg'];
+  if (!tracks.length) tracks = [{ title: 'Shen Yin', artist: 'Love and Deepspace' }];
+  var navItems = [{ name: 'Articles', path: '/' }, { name: 'Tags', path: '/tags/' }, { name: 'About', path: '/about/' }, { name: 'Archives', path: '/archives/' }];
+  var rotateImage = pick(assets.rotate_deepsea, 'images/deepsea/rotate.png');
+%>
+    <div class="deepsea-layout">
+      <aside class="deepsea-left" aria-label="壁纸与音乐">
+        <div class="wallpaper-bubble" data-wallpaper-carousel>
+          <div class="wallpaper-track" data-carousel-track>
+            <% carouselImages.forEach(function(image, index) { %>
+              <div class="wallpaper-slide" style="background-image: url('<%- url_for(image) %>');" role="img" aria-label="深海壁纸 <%- index + 1 %>"></div>
+            <% }) %>
+          </div>
+          <div class="wallpaper-dots" aria-label="壁纸轮播指示器">
+            <% carouselImages.forEach(function(image, index) { %>
+              <button class="wallpaper-dot<%- index === 0 ? ' is-active' : '' %>" type="button" data-slide-index="<%- index %>" aria-label="切换到第 <%- index + 1 %> 张壁纸"></button>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="music-bubble" data-music-player>
+          <div class="music-disc" aria-hidden="true"></div>
+          <div class="music-copy">
+            <% tracks.forEach(function(track, index) { %>
+              <p class="music-track<%- index === 0 ? ' is-current' : '' %>" data-track-index="<%- index %>">
+                <span class="music-title"><%- trackTitle(track) %></span>
+                <span class="music-artist"><%- trackArtist(track) %></span>
+              </p>
+            <% }) %>
+          </div>
+          <div class="music-actions" aria-label="音乐切换">
+            <button type="button" data-music-prev aria-label="上一首">上一首</button>
+            <button type="button" data-music-next aria-label="下一首">下一首</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="deepsea-right" aria-label="文章列表">
+        <nav class="deepsea-nav" aria-label="深海导航">
+          <% navItems.forEach(function(item) { %>
+            <a href="<%- url_for(item.path) %>"><%- item.name %></a>
+          <% }) %>
+        </nav>
+
+        <div class="deepsea-grid-scroll">
+          <% if (recentPosts.length) { %>
+            <div class="deepsea-grid">
+              <% recentPosts.forEach(function(post, index) {
+                var tags = normalizeArray(post.tags).map(tagName).slice(0, 2);
+                var cardImage = cardImages[index % cardImages.length];
+              %>
+                <a class="deepsea-article-card" href="<%- url_for(post.path) %>" aria-label="<%- post.title || '未命名文章' %>">
+                  <span class="deepsea-card-cover" style="background-image: url('<%- url_for(cardImage) %>');" role="img" aria-label="<%- post.title || '文章封面' %>"></span>
+                  <span class="deepsea-card-body">
+                    <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, config.date_format || 'YYYY-MM-DD') %></time>
+                    <strong><%- post.title || '未命名文章' %></strong>
+                    <% if (tags.length) { %>
+                      <span class="deepsea-card-tags"><%- tags.map(function(tag) { return '#' + tag; }).join('  ') %></span>
+                    <% } %>
+                  </span>
+                </a>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="deepsea-empty">这片海域还没有新的记录。</p>
+          <% } %>
+        </div>
+      </section>
+    </div>
+    <button class="theme-rotate-button deepsea-rotate" type="button" data-scroll-top aria-label="回到顶部">
+      <img src="<%- url_for(rotateImage) %>" alt="">
+    </button>
+  </section>
