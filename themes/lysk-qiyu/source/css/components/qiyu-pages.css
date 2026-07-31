@@ -827,8 +827,68 @@
   font-weight: 700;
 }
 
+.ancient-visits .visit-sub {
+  margin-top: 6px;
+  color: #8A7A6A;
+  font-size: 0.85rem;
+}
+
 .ancient-page-content .article-content {
   color: #4A3A2A;
+}
+
+/* GitHub 统计图区块 —— 宣纸底 + 珊瑚红点缀的古风配色 */
+.github-stats {
+  text-align: center;
+}
+
+.github-stats p {
+  margin: 12px 0;
+}
+
+.github-stats img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+.gh-heading {
+  margin: 6px 0 14px;
+  color: #4A3A2A;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.gh-badges img {
+  margin: 0 3px;
+}
+
+.gh-tagline {
+  color: #C05040;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.gh-note {
+  color: #6A5A4A;
+  font-size: 0.9rem;
+}
+
+.gh-quote {
+  display: inline-block;
+  margin: 16px auto;
+  padding: 0.85rem 1.8rem;
+  color: #6A4A3A;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.7;
+  background: rgba(192, 80, 64, 0.08);
+  border: 1px solid rgba(192, 80, 64, 0.22);
+  border-radius: 26px;
+}
+
+.gh-cards img {
+  margin: 6px 4px;
 }
 
 .painter-archive {

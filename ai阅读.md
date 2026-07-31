@@ -257,3 +257,46 @@
 ---
 
 > *“浪漫主义的根源，在画里，更在画外。”*
+
+
+qiyu-blog/
+├── public/
+│   ├── index.html
+│   └── assets/
+│       ├── images/
+│       │   ├── qiyu-avatar.jpg
+│       │   ├── sakura-bg.jpg
+│       │   └── ...
+│       └── fonts/
+├── src/
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── NavButton.jsx
+│   │   │   ├── MusicPlayer.jsx
+│   │   │   ├── ScrollTopButton.jsx
+│   │   │   └── ArticleCard.jsx
+│   │   ├── splash/
+│   │   │   └── SplashScreen.jsx
+│   │   ├── home/
+│   │   │   └── HomePage.jsx
+│   │   ├── article/
+│   │   │   └── ArticlePage.jsx
+│   │   ├── about/
+│   │   │   └── AboutPage.jsx
+│   │   └── archive/
+│   │       └── ArchivePage.jsx
+│   ├── hooks/
+│   │   ├── useCursorTrail.js
+│   │   └── useSakuraFall.js
+│   ├── data/
+│   │   ├── articles.js
+│   │   ├── wallpapers.js
+│   │   └── playlist.js
+│   ├── styles/
+│   │   ├── index.css
+│   │   └── themes.css
+│   ├── App.jsx
+│   └── index.js
+├── package.json
+├── tailwind.config.js
+└── README.md

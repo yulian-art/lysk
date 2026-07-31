@@ -1,12 +1,4 @@
 <%
-  function postCount(collection) {
-    if (!collection) return 0;
-    if (typeof collection.length === 'number') return collection.length;
-    if (typeof collection.count === 'function') return collection.count();
-    if (typeof collection.toArray === 'function') return collection.toArray().length;
-    return 0;
-  }
-
   function heatClass(index, offset) {
     return 'heat-cell heat-level-' + ((index * 7 + offset) % 5);
   }
@@ -17,7 +9,6 @@
   var avatar = assets.avatar || 'images/avatar.jpg';
   var ancientDay = assets.ancient_day || 'images/deepsea/ancient-day.jpg';
   var ancientNight = assets.ancient_night || 'images/deepsea/ancient-night.jpg';
-  var totalPosts = postCount(site.posts);
 %>
 
 <% if (isAbout) { %>
@@ -30,15 +21,45 @@
     </aside>
 
     <section class="ancient-records" aria-label="访问与提交记录">
-      <section class="ink-panel">
+      <section class="ink-panel ancient-github">
         <header>
           <p class="eyebrow">GitHub</p>
           <h2>提交记录</h2>
         </header>
-        <div class="ink-heatmap" aria-hidden="true">
-          <% for (var i = 0; i < 84; i++) { %>
-            <span class="<%- heatClass(i, 2) %>"></span>
-          <% } %>
+        <div class="github-stats">
+          <p class="gh-typing">
+            <img src="https://readme-typing-svg.demolab.com?font=Noto+Serif+SC&weight=600&size=32&duration=3000&pause=1000&color=C05040&background=F5EDE300&center=true&vCenter=true&width=500&lines=hello+world" alt="Typing SVG">
+          </p>
+
+          <h3 class="gh-heading">About Me</h3>
+
+          <p class="gh-badges">
+            <img src="https://img.shields.io/badge/%F0%9F%93%8D-wuwei-F5EDE3?style=flat-square&labelColor=C05040&color=6A5A4A" alt="location">
+            <img src="https://img.shields.io/badge/UTC-%2B8-F5EDE3?style=flat-square&labelColor=C05040&color=6A5A4A" alt="utc">
+            <a href="https://www.julien.net.cn"><img src="https://img.shields.io/badge/blog-julien-F5EDE3?style=flat-square&logo=hashnode&logoColor=white&labelColor=C05040&color=6A5A4A" alt="blog"></a>
+            <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white&labelColor=4A3A2A&color=C05040" alt="go">
+          </p>
+
+          <p class="gh-tagline"><em>vegetable chicken</em></p>
+          <p class="gh-note">防止自己摆烂决定放以下图来鞭尸</p>
+          <p class="gh-note">菜就多练</p>
+
+          <p class="gh-quote">
+            “Water flows not for the first place,<br>but for the endless torrent.”
+          </p>
+
+          <p class="gh-streak">
+            <img src="https://streak-stats.demolab.com/?user=yulian-art&hide_border=true&background=F5EDE300&stroke=C05040&ring=C05040&fire=C05040&currStreakNum=4A3A2A&currStreakLabel=C05040&sideNums=4A3A2A&sideLabels=6A5A4A&dates=8A7A6A" alt="streak">
+          </p>
+
+          <p class="gh-cards">
+            <img height="170" src="https://grs-stats.vercel.app/api?username=yulian-art&show_icons=true&hide_border=true&bg_color=F5EDE300&title_color=C05040&icon_color=C05040&text_color=6A5A4A&include_all_commits=true&count_private=true" alt="stats">
+            <img height="170" src="https://grs-stats.vercel.app/api/top-langs/?username=yulian-art&layout=compact&hide_border=true&bg_color=F5EDE300&title_color=C05040&text_color=6A5A4A&langs_count=10" alt="top-langs">
+          </p>
+
+          <p class="gh-activity">
+            <img width="98%" src="https://github-readme-activity-graph.vercel.app/graph?username=yulian-art&hide_border=true&bg_color=F5EDE3&color=4A3A2A&line=C05040&point=C05040&title_color=C05040" alt="activity graph">
+          </p>
         </div>
       </section>
 
@@ -54,13 +75,14 @@
         </div>
       </section>
 
-      <section class="ink-panel ancient-visits">
+      <section class="ink-panel ancient-visits" id="busuanzi_container_site_pv" style="display:none;">
         <header>
           <p class="eyebrow">Tide Count</p>
           <h2>访问量统计</h2>
         </header>
-        <div class="visit-number"><%- totalPosts %></div>
-        <p>篇潮汐记录被收进这片海。</p>
+        <div class="visit-number"><span id="busuanzi_value_site_pv">--</span></div>
+        <p>次潮汐涌入这片海 · 独立访客 <span id="busuanzi_value_site_uv">--</span> 位。</p>
+        <p class="visit-sub" id="busuanzi_container_page_pv" style="display:none;">本页被翻阅 <span id="busuanzi_value_page_pv">--</span> 次。</p>
       </section>
 
       <% if (page.content) { %>
